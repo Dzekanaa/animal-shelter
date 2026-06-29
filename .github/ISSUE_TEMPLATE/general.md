@@ -1,47 +1,43 @@
 ---
-name: General Issue
-about: Report a bug, suggest an improvement, or ask a question
+name: Development Task
+about: Create a development task for the project
 title: ""
 labels: ""
 assignees: ""
 ---
 
-## Summary
-
-A short description of the issue.
-
-## Type
-
-- [ ] Bug
-- [ ] Feature Request
-- [ ] Documentation
-- [ ] Question
-- [ ] Other
-
 ## Description
 
-Describe the issue, suggestion, or question in detail.
+Provide a clear and concise description of the task.
 
-## Steps to Reproduce (if applicable)
+---
 
-1.
-2.
-3.
+## Tasks
 
-## Expected Behavior
+- [ ]
+- [ ]
+- [ ]
 
-Describe what you expected to happen.
+---
 
-## Actual Behavior
+## Acceptance Criteria
 
-Describe what actually happened.
+- [ ]
+- [ ]
+- [ ]
 
-## Environment (if applicable)
+---
 
-- OS:
-- Version:
-- Compiler/Runtime:
+## Additional Notes
 
-## Additional Information
+Add any relevant information, screenshots, links, references, or implementation details.
 
-Add any screenshots, logs, links, or other context here.
+---
+
+## Definition of Done
+
+- [ ] Code compiles successfully.
+- [ ] Feature works as expected.
+- [ ] Tests added/updated (if applicable).
+- [ ] Documentation updated (if applicable).
+- [ ] Ready for review.
