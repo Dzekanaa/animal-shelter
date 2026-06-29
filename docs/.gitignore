@@ -1,0 +1,8 @@
+# docs/.gitignore
+build/
+*.pdf
+*.aux
+*.log
+*.out
+# PlantUML generated photos - optional
+# figures/
