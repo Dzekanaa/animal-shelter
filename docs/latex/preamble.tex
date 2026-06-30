@@ -1,0 +1,162 @@
+\usepackage[utf8]{inputenc}
+\usepackage[serbian]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[T1]{fontenc}
+
+% ===== GEOMETRY =====
+\geometry{
+    a4paper,
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+% ===== FONTS =====
+\usepackage{times}
+\setstretch{1.5}
+
+% ===== HEADER/FOOTER =====
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Udruženje za udomljavanje životinja}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{14.5pt}   % ispravlja upozorenje
+
+% ===== CODE LISTING =====
+\usepackage{listings}   % samo JEDNOM!
+
+% Definišemo C# jezik (jer ugrađeni "C#" nije uvijek dostupan)
+\lstdefinelanguage{CSharp}{
+    keywords={abstract, as, base, bool, break, byte, case, catch, char, checked,
+        class, const, continue, decimal, default, delegate, do, double, else,
+        enum, event, explicit, extern, false, finally, fixed, float, for,
+        foreach, goto, if, implicit, in, int, interface, internal, is, lock,
+        long, namespace, new, null, object, operator, out, override, params,
+        private, protected, public, readonly, ref, return, sbyte, sealed,
+        short, sizeof, stackalloc, static, string, struct, switch, this, throw,
+        true, try, typeof, uint, ulong, unchecked, unsafe, ushort, using,
+        virtual, void, volatile, while, async, await, get, set, value, add,
+        remove, where, yield, partial, var},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={Console, List, DbSet, Task, ICollection, IEnumerable, IQueryable,
+        Dictionary, HashSet, Stack, Queue, LinkedList, SortedList, SortedSet,
+        ObservableCollection, INotifyPropertyChanged, ICommand, RelayCommand,
+        IAsyncResult, AsyncCallback, Action, Func, Predicate, Tuple, ValueTuple,
+        Exception, InvalidOperationException, ArgumentException, ArgumentNullException,
+        NotImplementedException, NotSupportedException, NullReferenceException,
+        IndexOutOfRangeException, StackOverflowException, OutOfMemoryException,
+        ApplicationException, SystemException, Object, String, Int32, Int64,
+        Double, Decimal, DateTime, TimeSpan, Guid, Uri, XmlDocument, XDocument,
+        XElement, XAttribute, XNamespace, StreamReader, StreamWriter, File,
+        FileStream, MemoryStream, BinaryReader, BinaryWriter, TextReader, TextWriter,
+        StringBuilder, Regex, Match, Group, Collection, ArrayList, BitArray,
+        Random, Math, Environment, AppDomain, Assembly, Type, Activator, BindingFlags,
+        PropertyInfo, FieldInfo, MethodInfo, EventInfo, ConstructorInfo, ParameterInfo,
+        MemberInfo, Attribute, SerializableAttribute, ObsoleteAttribute, FlagsAttribute,
+        DllImportAttribute, StructLayoutAttribute, FieldOffsetAttribute, MarshalAsAttribute,
+        InAttribute, OutAttribute, OptionalAttribute, DefaultParameterValueAttribute,
+        CallerMemberNameAttribute, CallerFilePathAttribute, CallerLineNumberAttribute,
+        CallerArgumentExpressionAttribute, DataContractAttribute, DataMemberAttribute,
+        EnumMemberAttribute, KnownTypeAttribute, ServiceContractAttribute, OperationContractAttribute,
+        FaultContractAttribute, MessageContractAttribute, MessageHeaderAttribute,
+        MessageBodyMemberAttribute, WebInvokeAttribute, WebGetAttribute, WebServiceBindingAttribute,
+        WebMethodAttribute, WebServiceAttribute, SoapDocumentMethodAttribute, SoapRpcMethodAttribute},
+    ndkeywordstyle=\color{magenta}\bfseries,
+    identifierstyle=\color{black},
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{red},
+    string=[b]",
+    string=[b]',
+    stringstyle=\color{red},
+    showstringspaces=false,
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    backgroundcolor=\color{lightgray!20},
+    tabsize=4,
+    extendedchars=true,
+    inputencoding=utf8,
+    literate=
+        {č}{{\v{c}}}1
+        {ć}{{\'c}}1
+        {š}{{\v{s}}}1
+        {đ}{{\dj}}1
+        {ž}{{\v{z}}}1
+        {Č}{{\v{C}}}1
+        {Ć}{{\'C}}1
+        {Š}{{\v{S}}}1
+        {Đ}{{\DJ}}1
+        {Ž}{{\v{Z}}}1
+}
+
+% Postavi CSharp kao default jezik
+\lstset{language=CSharp}
+
+% ===== IMAGE PATHS =====
+\graphicspath{{figures/}}
+
+% ===== TITLE PAGE COMMAND =====
+\newcommand{\maketitlepage}{
+    \begin{titlepage}
+        \centering
+        \vspace*{2cm}
+        
+        {\LARGE \textbf{Fakultet tehničkih nauka} \par}
+        \vspace{0.5cm}
+        {\large Novi Sad \par}
+        
+        \vfill
+        
+        {\Huge \textbf{Udruženje za udomljavanje životinja} \par}
+        \vspace{0.5cm}
+        {\large Sistemska analiza i modeliranje \par}
+        
+        \vfill
+        
+        {\large Predmetni projekat \par}
+        \vspace{2cm}
+        {\large Prof. dr. Gordana Milosavljević \par}
+        
+        \vfill
+        
+        {\large Novi Sad, \today \par}
+        
+    \end{titlepage}
+    \newpage
+    \setcounter{page}{1}
+}
+
+% ===== TABLE OF CONTENTS =====
+\renewcommand{\contentsname}{Sadržaj}
+\renewcommand{\listfigurename}{Lista slika}
+\renewcommand{\listtablename}{Lista tabela}
+
+% ===== CHAPTER STYLE =====
+\usepackage{titlesec}
+\titleformat{\chapter}
+    {\normalfont\Large\bfseries}
+    {\thechapter.}
+    {1em}
+    {}
+\titlespacing{\chapter}{0pt}{-30pt}{20pt}
+
+
+\usepackage{pifont}

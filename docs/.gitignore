@@ -1,8 +1,44 @@
-# docs/.gitignore
-build/
-*.pdf
+# LaTeX build artifacts
 *.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.fmt
 *.log
 *.out
-# PlantUML generated photos - optional
-# figures/
+*.pdf
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.loa
+*.run.xml
+
+# Build directory
+build/
+*.pdf
+
+# Editor-specific files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS-specific
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Generirane slike iz PlantUML
+figures/*.png
+figures/*.jpeg
+
+# Python cache (ako koristiš scripts)
+__pycache__/
+*.pyc
+
+# Temporary files
+temp/
+*.tmp

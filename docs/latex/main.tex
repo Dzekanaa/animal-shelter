@@ -1,0 +1,36 @@
+\documentclass[12pt,a4paper]{report}
+
+% ===== PREAMBLE =====
+\input{preamble.tex}
+
+% ===== DOCUMENT =====
+\begin{document}
+
+% ===== TITLE PAGE =====
+\maketitlepage
+
+% ===== TABLE OF CONTENTS =====
+\tableofcontents
+\newpage
+
+\listoffigures
+\newpage
+
+% ===== CHAPTERS =====
+\input{chapters/01-introduction.tex}
+\input{chapters/02-requirements.tex}
+\input{chapters/03-design.tex}
+% \input{chapters/04-implementation.tex}   % trenutno isključeno
+\input{chapters/05-conclusion.tex}
+
+% ===== BIBLIOGRAPHY =====
+\newpage
+\begin{thebibliography}{99}
+
+\bibitem{sims}
+popuni
+Fakultet tehničkih nauka, Novi Sad.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,128 @@
+\chapter{Dizajn sistema}
+
+\section{UML dijagrami}
+
+Dizajn sistema je modeliran korišćenjem UML dijagrama koji prikazuju različite aspekte arhitekture.
+
+\subsection{Dijagram klasa}
+
+Dijagram klasa prikazuje strukturnu dekompoziciju sistema i odnose između entiteta.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{02-class-diagram.png}
+    \caption{Dijagram klasa sistema za udomljavanje životinja}
+    \label{fig:class-diagram}
+\end{figure}
+
+\subsubsection{Hijerarhija korisnika}
+
+Sistem definiše apstraktnu klasu \texttt{Korisnik} iz koje nasleđuju specifični tipovi korisnika:
+
+\begin{itemize}
+    \item \textbf{SistemskiAdmin}: Ima pristup globalnim podacima, može registrovati nova udruženja
+    \item \textbf{AdminUdruženja}: Upravlja specifičnim udruženjem, dozvolama i izveštajima
+    \item \textbf{Volonter}: Dodaje životinje, upravlja zahtevima, povezuje udomitelje
+    \item \textbf{Udomitelj}: Može biti registrovan ili neregistrovan, unosi podatke pri zahtevu
+    \item \textbf{NeregistrovaniKorisnik}: Može pregledati životinje i poslati zahtev
+\end{itemize}
+
+\subsubsection{Entiteti}
+
+\paragraph{Udruženje}
+Reprezentuje organizaciju koja upravlja udomljavanjem. Sadrži:
+
+
+\paragraph{Životinja}
+Reprezentuje životnju dostupnu za udomljavanje. Ima tri stanja:
+\begin{itemize}
+    \item DOSTUPNA - životnja nije u procesu udomljavanje
+    \item ZAUZETA - postoji aktivna prijava za udomljavanje
+    \item UDOMLJENA - životnja je udomljena
+\end{itemize}
+
+\paragraph{Udomljavanje}
+Predstavlja relaciju između životnje i udomitelja sa sledećim atributima:
+\begin{itemize}
+    \item Napomena za udomitelja
+    \item Datum udomljavanje
+    \item Status komunikacije (SMS, email, ručno)
+\end{itemize}
+
+\paragraph{Donacija}
+Donacija može biti:
+\begin{itemize}
+    \item Opšta - donacija za udruženje (životinja = NULL)
+    \item Namenjena - donacija za specifičnu životnju
+\end{itemize}
+
+Vrste donacija: hrana, voda, lekovi, oprema, novac.
+
+\paragraph{Izveštaj}
+Sistem generiše izveštaje na dnevnom, nedelnom i mesečnom nivou sa sledećom statistikom:
+\begin{itemize}
+    \item Broj udomljenih životinja
+    \item Broj vraćenih životinja
+    \item Ukupna donacija po vrsti
+\end{itemize}
+
+\section{Principi dizajna}
+
+\subsection{Separacija gladanja (Separation of Concerns)}
+
+Arhitektura je organizovana u tri sloja:
+
+\begin{itemize}
+    \item \textbf{Presentation Layer} - Avalonia UI sa MVVM arhitekturom
+    \item \textbf{Business Logic Layer} - Poslovne pravile i operacije
+    \item \textbf{Data Access Layer} - Komunikacija sa bazom podataka
+\end{itemize}
+
+\subsection{SOLID principi}
+
+\begin{description}
+    \item[S - Single Responsibility] Svaka klasa ima jednu odgovornost
+    \item[O - Open/Closed] Klase su otvorene za proširenje, zatvorene za izmenu
+    \item[L - Liskov Substitution] Izvedene klase mogu zamenjivati bazne klase
+    \item[I - Interface Segregation] Interfejsi su specifični i maleni
+    \item[D - Dependency Inversion] Zavisnosti od abstraktnih, a ne konkretnih klasa
+\end{description}
+
+\section{Baza podataka}
+
+Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na treći normalni oblik (3NF).
+
+\subsection{Ključne tabele}
+
+\begin{itemize}
+    \item \texttt{Korisnici} - sve vrste korisnika
+    \item \texttt{Udruženja} - registrovana udruženja
+    \item \texttt{Životinje} - dostupne životnje
+    \item \texttt{Zahtevi} - zahtevi za udomljavanje
+    \item \texttt{Udomljavanje} - istorija udomljavanja
+    \item \texttt{Donacije} - evidencija donacija
+    \item \texttt{Izveštaji} - generirani izveštaji
+\end{itemize}
+
+\section{Tehnološki stek}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|}
+        \hline
+        \textbf{Komponenta} & \textbf{Tehnologija} \\
+        \hline
+        Programski jezik & C\# 12 \\
+        \hline
+        Framework & .NET 10 \\
+        \hline
+        UI Framework & Avalonia 11.3 \\
+        \hline
+        Baza podataka & PostgreSQL \\
+        \hline
+        Verzijski sistem & Git/GitHub \\
+        \hline
+    \end{tabularx}
+    \caption{Tehnološki stek}
+    \label{tab:tech-stack}
+\end{table}
