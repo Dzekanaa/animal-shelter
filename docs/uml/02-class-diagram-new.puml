@@ -10,13 +10,16 @@ skinparam linetype ortho
 
 '================ ABSTRACT =================
 
-abstract class Korisnik <<abstract>> {
+abstract class Osoba <<abstract>> {
     - id: int
     - ime: string
     - prezime: string
-    - email: string
-    - telefon: string
-    - adresa: string
+    - kontaktPodaci: KontaktPodaci
+
+    + posaljiZahtevZaUdomljavanje(zahtev): void
+}
+
+abstract class Korisnik <<abstract>> {
     - datumRegistracije: DateTime
     + getKorisnikTip(): string
 }
@@ -54,8 +57,6 @@ class Volonter {
 }
 
 class Udomitelj {
-    - registrovan: boolean
-
     + uzmiZivotinju(zivotinja): void
     + vratiZivotinju(zivotinja): void
     + odustaniOdUdomljavanja(udomljavanje): void
@@ -64,7 +65,6 @@ class Udomitelj {
 class Gost {
     + pregledZivotinja(): List<Zivotinja>
     + pregledUdruzenja(): List<Udruzenje>
-    + posaljiZahtevZaUdomljavanje(zahtev): void
 }
 
 '================ ENTITIES =================
@@ -73,9 +73,7 @@ class Udruzenje <<entity>> {
     - id: int
     - naziv: string
     - opis: string
-    - email: string
-    - telefon: string
-    - adresa: string
+    - kontaktPodaci: KontaktPodaci
     - datumOsnivanja: DateTime
     - racun: Racun
 
@@ -134,7 +132,7 @@ enum NacinObavestavanja {
 class ZahtevZaUdomljavanje <<entity>> {
     - id: int
     - datumPodnosenja: DateTime
-    - kontaktPodaci: KontaktPodaci
+    - podnosilac: Osoba
     - status: StatusZahteva
 
     + prihvati(): void
@@ -152,7 +150,6 @@ class Donacija <<entity>> {
     - vrsta: VrstaDonacije
     - iznos: decimal
     - datumUplate: DateTime
-    - donator: string
     - svrha: string
     - zivotinjaNamena: Zivotinja [0..1]
     - racun: Racun
@@ -169,7 +166,6 @@ enum VrstaDonacije {
 }
 
 class Izvestaj <<value>> {
-    - id: int
     - tip: TipIzvestaja
     - period: PeriodIzvestaja
     - datumGenerisanja: DateTime
@@ -190,7 +186,7 @@ enum PeriodIzvestaja {
     MESECNI
 }
 
-class Statistika {
+class Statistika <<value>> {
     - brojUdomljenih: int
     - brojVracenih: int
     - ukupnaDonacija: decimal
@@ -214,35 +210,37 @@ class Racun <<value>> {
 
 '================ RELATIONS =================
 
+Osoba <|-- Korisnik
+Osoba <|-- Gost
+Osoba *-- KontaktPodaci
+
 Korisnik <|-- SistemskiAdmin
 Korisnik <|-- AdminUdruzenja
 Korisnik <|-- Volonter
 Korisnik <|-- Udomitelj
 
-Udruzenje "1" --> "*" Zivotinja
-Udruzenje "1" --> "*" Volonter
-Udruzenje "1" --> "*" AdminUdruzenja
-Udruzenje "1" --> "1" Racun
+Udruzenje *-- KontaktPodaci
+Udruzenje "1" -- "*" Zivotinja
+Udruzenje "0..*" -- "1" Volonter
+Udruzenje "1" -- "1..*" AdminUdruzenja
+Udruzenje *-- Racun
 
-AdminUdruzenja --> Udruzenje
-Volonter --> Udruzenje
+AdminUdruzenja --> Donacija : upravlja
+
+Volonter --> Zivotinja
+Volonter --> Udomljavanje
 
 Zivotinja --> StatusZivotinje
 Zivotinja --> KategorijaZivotinje
 
 Udomljavanje --> Zivotinja
-Udomljavanje --> Udomitelj
-Udomljavanje --> Volonter
 Udomljavanje --> NacinObavestavanja
 
 Udomitelj "1" --> "*" Udomljavanje
 
 ZahtevZaUdomljavanje --> Zivotinja
-ZahtevZaUdomljavanje --> Udomitelj
-ZahtevZaUdomljavanje --> KontaktPodaci
+ZahtevZaUdomljavanje --> Osoba : podnosilac
 ZahtevZaUdomljavanje --> StatusZahteva
-
-Gost --> ZahtevZaUdomljavanje
 
 Donacija --> VrstaDonacije
 Donacija --> Racun
