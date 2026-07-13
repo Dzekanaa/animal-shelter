@@ -1,4 +1,4 @@
-@startuml animal-shelter-class-diagram
+@startuml
 !define ABSTRACT_COLOR #FFE5B4
 !define ENTITY_COLOR #B4D7FF
 !define VALUE_COLOR #D7FFB4
