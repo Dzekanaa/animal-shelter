@@ -11,16 +11,17 @@ skinparam linetype ortho
 '================ ABSTRACT =================
 
 abstract class Osoba <<abstract>> {
+    + pregledZivotinja(): List<Zivotinja>
+    + pregledUdruzenja(): List<Udruzenje>
+}
+
+abstract class Korisnik <<abstract>> {
     - id: int
     - ime: string
     - prezime: string
     - kontaktPodaci: KontaktPodaci
-
-    + posaljiZahtevZaUdomljavanje(zahtev): void
-}
-
-abstract class Korisnik <<abstract>> {
     - datumRegistracije: DateTime
+
     + getKorisnikTip(): string
 }
 
@@ -57,14 +58,13 @@ class Volonter {
 }
 
 class Udomitelj {
-    + uzmiZivotinju(zivotinja): void
     + vratiZivotinju(zivotinja): void
-    + odustaniOdUdomljavanja(udomljavanje): void
+    + posaljiZahtevZaUdomljavanje(zahtev): void
+    + odustaniOdUdomljavanja(zahtev): void
 }
 
 class Gost {
-    + pregledZivotinja(): List<Zivotinja>
-    + pregledUdruzenja(): List<Udruzenje>
+    
 }
 
 '================ ENTITIES =================
@@ -132,7 +132,7 @@ enum NacinObavestavanja {
 class ZahtevZaUdomljavanje <<entity>> {
     - id: int
     - datumPodnosenja: DateTime
-    - podnosilac: Osoba
+    - podnosilac: Udomitelj
     - status: StatusZahteva
 
     + prihvati(): void
@@ -165,7 +165,8 @@ enum VrstaDonacije {
     NOVAC
 }
 
-class Izvestaj <<value>> {
+class Izvestaj {
+    - id: int
     - tip: TipIzvestaja
     - period: PeriodIzvestaja
     - datumGenerisanja: DateTime
@@ -212,12 +213,12 @@ class Racun <<value>> {
 
 Osoba <|-- Korisnik
 Osoba <|-- Gost
-Osoba *-- KontaktPodaci
 
 Korisnik <|-- SistemskiAdmin
 Korisnik <|-- AdminUdruzenja
 Korisnik <|-- Volonter
 Korisnik <|-- Udomitelj
+Korisnik *-- KontaktPodaci
 
 Udruzenje *-- KontaktPodaci
 Udruzenje "1" -- "*" Zivotinja
@@ -230,16 +231,15 @@ AdminUdruzenja --> Donacija : upravlja
 Volonter --> Zivotinja
 Volonter --> Udomljavanje
 
+Udomitelj --> ZahtevZaUdomljavanje
+
 Zivotinja --> StatusZivotinje
 Zivotinja --> KategorijaZivotinje
 
 Udomljavanje --> Zivotinja
 Udomljavanje --> NacinObavestavanja
 
-Udomitelj "1" --> "*" Udomljavanje
-
 ZahtevZaUdomljavanje --> Zivotinja
-ZahtevZaUdomljavanje --> Osoba : podnosilac
 ZahtevZaUdomljavanje --> StatusZahteva
 
 Donacija --> VrstaDonacije
