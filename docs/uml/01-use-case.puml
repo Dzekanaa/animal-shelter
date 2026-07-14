@@ -2,17 +2,27 @@
 left to right direction
 
 skinparam actorStyle awesome
+skinparam packageStyle rectangle
 
+actor Osoba
 actor Korisnik
+actor Udomitelj
 actor Volonter
 actor "Administrator udruženja" as Admin
 actor "Sistemski administrator" as SysAdmin
 
+Osoba <|-- Korisnik
+
+Korisnik <|-- Udomitelj
 Korisnik <|-- Volonter
 Korisnik <|-- Admin
 Korisnik <|-- SysAdmin
 
 rectangle "Aplikacija za udomljavanje životinja" {
+
+'=========================
+' Opšte
+'=========================
 
 usecase "Prijava" as UC1
 usecase "Odjava" as UC2
@@ -22,85 +32,109 @@ usecase "Pregled dostupnih\nživotinja" as UC4
 usecase "Zahtev za\nvolontiranje" as UC5
 usecase "Zahtev za\nudomljavanje" as UC6
 
-usecase "CRUD\nregistracija udruženja" as UC7
-usecase "Pregled svih\nkorisnika" as UC8
+usecase "Vrati\nživotinju" as UC7
 
-usecase "CRUD\nregistracija volontera" as UC9
-usecase "Promocija\nvolontera" as UC10
-usecase "Pregled svih\nvolontera udruženja" as UC11
+'=========================
+' Sistemski administrator
+'=========================
 
-usecase "Upravljanje\ndonacijama" as UC12
+usecase "<<CRUD>>\nRegistracija udruženja" as UC8
+usecase "<<CRUD>>\nRegistracija\nadministratora\nudruženja" as UC9
+usecase "Pregled svih\nkorisnika" as UC10
 
-usecase "Izveštaj o\ndonacijama" as UC13
-usecase "Objava izveštaja\no donacijama" as UC22
+'=========================
+' Administrator udruženja
+'=========================
 
-usecase "Izveštaj o\nudomljavanjima" as UC14
-usecase "Objava izveštaja\no udomljavanjima" as UC23
+usecase "<<CRUD>>\nRegistracija\nvolontera" as UC11
 
-usecase "Import i pregled\nizvoda računa\nudruženja" as UC15
+usecase "Prihvatanje\nzahteva za\nvolontiranje" as UC12
+usecase "Odbijanje\nzahteva za\nvolontiranje" as UC13
 
-usecase "CRUD\nregistracija\nudomitelja" as UC16
+usecase "Promocija\nvolontera" as UC14
+usecase "Pregled svih\nvolontera udruženja" as UC15
 
-usecase "Prikaz svih\nudomitelja" as UC17
+usecase "Upravljanje\ndonacijama" as UC16
 
-usecase "CRUD\nDodavanje\nživotinja" as UC18
+usecase "Izveštaj o\nudomljavanjima" as UC17
+usecase "Objava izveštaja\no udomljavanjima" as UC18
 
-usecase "CRUD\nUnošenje podataka\no udomljavanju" as UC19
+usecase "Izveštaj o\ndonacijama" as UC19
+usecase "Objava izveštaja\no donacijama" as UC20
 
-usecase "Prihvatanje ili\nodbijanje zahteva\nza udomljavanje" as UC20
+usecase "Import i pregled\nizvoda računa\nudruženja" as UC21
 
-usecase "Slanje obaveštenja\nudomitelju" as UC21
+usecase "Prihvatanje ili\nodbijanje zahteva\nza udomljavanje" as UC22
+
+usecase "Slanje\nobaveštenja\nudomitelju" as UC23
+
+usecase "Prikaz svih\nudomitelja" as UC24
+
+usecase "<<CRUD>>\nRegistracija\nudomitelja" as UC25
+
+'=========================
+' Volonter
+'=========================
+
+usecase "<<CRUD>>\nDodavanje\nživotinja" as UC26
+
+usecase "<<CRUD>>\nUnošenje\npodataka o\nudomljavanju" as UC27
+
+usecase "Uzimanje\nživotinje u\nsmeštaj" as UC28
 
 }
 
 '=========================
-' Veze aktera
+' Akteri
 '=========================
+
+Osoba --> UC3
+Osoba --> UC4
+Osoba --> UC5
+Osoba --> UC6
 
 Korisnik --> UC1
 Korisnik --> UC2
-Korisnik --> UC3
-Korisnik --> UC4
-Korisnik --> UC5
-Korisnik --> UC6
 
-Volonter --> UC16
-Volonter --> UC17
-Volonter --> UC18
-Volonter --> UC19
-Volonter --> UC20
+Udomitelj --> UC7
 
-Admin --> UC9
-Admin --> UC10
-Admin --> UC11
+SysAdmin --> UC8
+SysAdmin --> UC10
+
 Admin --> UC12
 Admin --> UC13
 Admin --> UC14
 Admin --> UC15
 Admin --> UC16
 Admin --> UC17
-Admin --> UC20
+Admin --> UC19
+Admin --> UC21
+Admin --> UC22
+Admin --> UC24
+Admin --> UC25
 
-SysAdmin --> UC7
-SysAdmin --> UC8
-
-'=========================
-' Include
-'=========================
-
-UC20 ..> UC21 : <<include>>
-
-'=========================
-' Hidden raspored
-'=========================
-
-UC13 -[hidden]-> UC22
-UC14 -[hidden]-> UC23
+Volonter --> UC22
+Volonter --> UC24
+Volonter --> UC25
+Volonter --> UC26
+Volonter --> UC27
+Volonter --> UC28
 
 '=========================
-' Extend
+' include
 '=========================
 
-UC22 ..> UC13 : <<extend>>
-UC23 ..> UC14 : <<extend>>
+UC8 ..> UC9 : <<include>>
+
+UC12 ..> UC11 : <<include>>
+
+UC22 ..> UC23 : <<include>>
+
+'=========================
+' extend
+'=========================
+
+UC18 ..> UC17 : <<extend>>
+
+UC20 ..> UC19 : <<extend>>
 @enduml
