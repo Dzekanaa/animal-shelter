@@ -39,8 +39,8 @@ class AdminUdruzenja {
     + upravljajDonacijama(donacija): void
     + generisiIzvestaj(tip): Izvestaj
     + pregledVolontera(): List<Volonter>
-    + pregledUdomitelja(): List<Udomitelj>
-    + pregledZivotinja(): List<Zivotinja>
+    + importujIzvodRacunaUdruzenja(): void
+    + pregledIzvodaRacunaUdruzenja(): void
 
     + prihvatiZahtevZaVolontiranje(zahtev): void
     + odbijZahtevZaVolontiranje(zahtev): void
@@ -50,9 +50,7 @@ class Volonter {
     - udruzenje: Udruzenje
     - datumUclanjenja: DateTime
 
-    + dodajZivotinju(zivotinja): void
     + uzmiZivotinjuUSmestaj(zivotinja): void
-    + dodajUdomitelja(udomitelj): void
     + poveziZivotinjuSaUdomiteljem(zivotinja, udomitelj): void
     + dodajNapomenu(udomljavanje, napomena): void
 }
@@ -64,7 +62,7 @@ class Udomitelj {
 }
 
 class Gost {
-    
+    + posaljiZahtevZaUdomljavanje(): void
 }
 
 '================ ENTITIES =================
@@ -77,8 +75,10 @@ class Udruzenje <<entity>> {
     - datumOsnivanja: DateTime
     - racun: Racun
 
+    + dodajZivotinju(zivotinja): void
+    + dodajUdomitelja(udomitelj): void
     + dodajVolontera(volonter): void
-    + ukloniVolontera(volonter): void
+    + pregledUdomitelja(): List<Udomitelj>
 }
 
 class Zivotinja <<entity>> {
@@ -227,8 +227,9 @@ Udruzenje "1" -- "1..*" AdminUdruzenja
 Udruzenje *-- Racun
 
 AdminUdruzenja --> Donacija : upravlja
+AdminUdruzenja --> ZahtevZaUdomljavanje
 
-Volonter --> Zivotinja
+Volonter --> ZahtevZaUdomljavanje
 Volonter --> Udomljavanje
 
 Udomitelj --> ZahtevZaUdomljavanje
@@ -251,5 +252,8 @@ Izvestaj --> PeriodIzvestaja
 Izvestaj --> Statistika
 Izvestaj --> Donacija
 Izvestaj --> Udomljavanje
+
+Gost --> ZahtevZaUdomljavanje
+(Gost, ZahtevZaUdomljavanje) .. KontaktPodaci
 
 @enduml
