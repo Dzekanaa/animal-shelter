@@ -44,6 +44,9 @@ class AdminUdruzenja {
 
     + prihvatiZahtevZaVolontiranje(zahtev): void
     + odbijZahtevZaVolontiranje(zahtev): void
+
+    + generisiIzveštaj(): void
+    + objaviIzveštaj(): void
 }
 
 class Volonter {
@@ -140,9 +143,6 @@ class Izvestaj {
     - period: PeriodIzvestaja
     - datumGenerisanja: DateTime
     - statistika: Statistika
-
-    + generisi(): void
-    + objavi(): void
 }
 
 enum TipIzvestaja {
