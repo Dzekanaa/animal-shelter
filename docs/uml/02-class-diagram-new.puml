@@ -21,7 +21,7 @@ abstract class Korisnik <<abstract>> {
 
     + dodajUdomitelja(udomitelj): void
     + udomiZivotinju(zivotinja, udomitelj): void
-    + dodajSlikuŽivotinje(slika): void
+    + dodajSlikuŽivotinje(zivotinja, slika): void
     + obradiZahtevZaUdomljavanje(zahtev): void
     + dodajNapomenuPriUdomljavanju(udomljavanje, napomena): void
 }
@@ -38,15 +38,13 @@ class SistemskiAdmin {
 
 class AdminUdruzenja {
     + generisiIzvestaj(tip): Izvestaj
+    + objaviIzveštaj(Izvestaj): void
     + dodajVolontera(): List<Volonter>
     + dodajZivotinju(zivotinja): void
     + importujIzvodRacunaUdruzenja(): void
 
     + prihvatiZahtevZaVolontiranje(zahtev): void
     + odbijZahtevZaVolontiranje(zahtev): void
-
-    + generisiIzveštaj(): void
-    + objaviIzveštaj(): void
 }
 
 class Volonter {
@@ -109,11 +107,6 @@ enum ZdravljeZivotinje {
     BOLESNA
 }
 
-enum TipKorisnika {
-    VOLONTER
-    ADMINISTRATOR
-}
-
 enum NacinObavestavanja {
     SMS
     EMAIL
@@ -163,6 +156,20 @@ class Statistika <<value>> {
     - vrsteDonacija: List<VrstaDonacije>
 }
 
+class ZahtevZaVolontiranje {
+    - id: int
+    - ime: string
+    - prezime: string
+    - opis: string
+    - statusPrijave: StatusPrijave
+}
+
+enum StatusPrijave {
+    ČEKA
+    ODBIJEN
+    PRIHVAĆEN
+}
+
 '================ VALUE OBJECTS =================
 
 class KontaktPodaci <<value>> {
@@ -192,5 +199,7 @@ Udomitelj *-- KontaktPodaci
 ZahtevZaUdomljavanje "*" -- "1" Zivotinja
 
 Izvestaj --> Statistika
+
+ZahtevZaVolontiranje *-- KontaktPodaci
 
 @enduml
