@@ -156,7 +156,7 @@ class Statistika <<value>> {
     - vrsteDonacija: List<VrstaDonacije>
 }
 
-class ZahtevZaVolontiranje {
+class PrijavaZaVolontiranje {
     - id: int
     - ime: string
     - prezime: string
@@ -200,6 +200,6 @@ ZahtevZaUdomljavanje "*" -- "1" Zivotinja
 
 Izvestaj --> Statistika
 
-ZahtevZaVolontiranje *-- KontaktPodaci
+PrijavaZaVolontiranje *-- KontaktPodaci
 
 @enduml
