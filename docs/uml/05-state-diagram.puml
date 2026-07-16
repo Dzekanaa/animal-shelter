@@ -1,0 +1,16 @@
+@startuml
+title Prelaz stanja - obrada zahteva za udomljavanje
+
+[*] --> Čekanje : Posetilac sajta podneo prijavu
+Čekanje --> Prihvaćena : prihvaćena
+Prihvaćena --> Čekanje : reevaluacija
+
+Čekanje --> Odbijena : odbijena / neko drugi je udomio životinju
+Odbijena --> Čekanje : reevaluacija
+
+Prihvaćena --> Preuzeta : životinja udomljena
+
+Preuzeta --> [*]
+Odbijena --> [*]
+
+@enduml
