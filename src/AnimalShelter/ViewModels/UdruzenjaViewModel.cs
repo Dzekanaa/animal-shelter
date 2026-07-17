@@ -32,6 +32,7 @@ public partial class UdruzenjaViewModel : ObservableObject
     public ICommand IzmeniCommand { get; }
     public ICommand ObrisiCommand { get; }
     public ICommand OsveziCommand { get; }
+    public ICommand PrikaziZivotinjeCommand { get; }
 
     private Window? _ownerWindow;
 
@@ -39,6 +40,7 @@ public partial class UdruzenjaViewModel : ObservableObject
     {
         _service = new UdruzenjeService();
 
+        PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync);
         DodajCommand = new AsyncRelayCommand(DodajAsync);
         IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => SelectedUdruzenje != null);
         ObrisiCommand = new AsyncRelayCommand(ObrisiAsync, () => SelectedUdruzenje != null);
@@ -47,6 +49,15 @@ public partial class UdruzenjaViewModel : ObservableObject
         _ = InitAsync();
     }
 
+    private async Task PrikaziZivotinjeAsync(Udruzenje? udruzenje)
+    {
+        if (udruzenje == null || _ownerWindow == null) return;
+
+        var vm = new ZivotinjeViewModel(udruzenje.Id);
+        var window = new ZivotinjeWindow();
+        window.SetViewModel(vm);
+        await window.ShowDialog(_ownerWindow);
+    }
     private async Task InitAsync()
     {
         try
