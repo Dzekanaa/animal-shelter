@@ -1,6 +1,5 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using AnimalShelter.ViewModels;
 
 namespace AnimalShelter.Views;
 
@@ -9,5 +8,7 @@ public partial class UdruzenjaWindow : Window
     public UdruzenjaWindow()
     {
         InitializeComponent();
+        if (DataContext is UdruzenjaViewModel vm)
+            vm.SetOwnerWindow(this);
     }
 }

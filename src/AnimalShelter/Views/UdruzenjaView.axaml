@@ -1,9 +1,33 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="AnimalShelter.Views.UdruzenjaView"
-        Title="UdruzenjaView">
-    Welcome to Avalonia!
-</Window>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+             x:Class="AnimalShelter.Views.UdruzenjaView"
+             x:DataType="vm:UdruzenjaViewModel">
+    <Design.DataContext>
+        <vm:UdruzenjaViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding DodajCommand}" Content="Dodaj" Margin="0,0,5,0"/>
+            <Button Command="{Binding IzmeniCommand}" Content="Izmeni" Margin="0,0,5,0"/>
+            <Button Command="{Binding ObrisiCommand}" Content="Obriši" Margin="0,0,5,0"/>
+            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+        </StackPanel>
+
+        <!-- Lista -->
+        <DataGrid ItemsSource="{Binding Udruzenja}"
+                  SelectedItem="{Binding SelectedUdruzenje}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Naziv" Binding="{Binding Naziv}" Width="*"/>
+                <DataGridTextColumn Header="Datum osnivanja" Binding="{Binding DatumOsnivanja, StringFormat='dd.MM.yyyy'}" Width="120"/>
+                <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="120"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
