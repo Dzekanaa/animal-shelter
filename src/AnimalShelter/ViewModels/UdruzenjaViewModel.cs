@@ -33,20 +33,25 @@ public partial class UdruzenjaViewModel : ObservableObject
     public ICommand ObrisiCommand { get; }
     public ICommand OsveziCommand { get; }
     public ICommand PrikaziZivotinjeCommand { get; }
+    
+    public bool CanManageUdruzenja => AppSession.IsSistemskiAdmin;
 
     private Window? _ownerWindow;
 
     public UdruzenjaViewModel()
     {
         _service = new UdruzenjeService();
+        
+        
+        bool CanManageUdruzenja() => AppSession.IsSistemskiAdmin;
 
-        PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync);
-        DodajCommand = new AsyncRelayCommand(DodajAsync);
-        IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => SelectedUdruzenje != null);
-        ObrisiCommand = new AsyncRelayCommand(ObrisiAsync, () => SelectedUdruzenje != null);
+        DodajCommand = new AsyncRelayCommand(DodajAsync, CanManageUdruzenja);
+        IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => CanManageUdruzenja() && SelectedUdruzenje != null);
+        ObrisiCommand = new AsyncRelayCommand(ObrisiAsync, () => CanManageUdruzenja() && SelectedUdruzenje != null);
         OsveziCommand = new AsyncRelayCommand(OsveziAsync);
+        PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync); // uvijek dostupno
 
-        _ = InitAsync();
+        _ = OsveziAsync();
     }
 
     private async Task PrikaziZivotinjeAsync(Udruzenje? udruzenje)

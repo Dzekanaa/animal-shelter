@@ -36,4 +36,10 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.10" />
         <PackageReference Include="Npgsql" Version="10.0.3" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\ZivotinjeEditorWindow.axaml.cs">
+        <DependentUpon>ZivotinjeEditorWindow.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
 </Project>
