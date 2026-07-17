@@ -1,17 +1,34 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Avalonia.Controls;
+using AnimalShelter.Models;
 using AnimalShelter.ViewModels;
 
 namespace AnimalShelter.Views;
 
-public partial class MainWindow : Window
+public partial class MainWindow : Window, INotifyPropertyChanged
 {
+    private bool _isLoggedIn;
+    private string _windowTitle = "Animal Shelter - Prijava";
+
+    public bool IsLoggedIn
+    {
+        get => _isLoggedIn;
+        set { _isLoggedIn = value; OnPropertyChanged(); }
+    }
+
+    public string WindowTitle
+    {
+        get => _windowTitle;
+        set { _windowTitle = value; OnPropertyChanged(); }
+    }
+
     private LoginViewModel? _loginVm;
 
     public MainWindow()
     {
         InitializeComponent();
-
-        // Prikazujemo LoginView na startu
+        DataContext = this; // Važno: postavljamo DataContext za bindings
         ShowLoginView();
     }
 
@@ -20,33 +37,47 @@ public partial class MainWindow : Window
         _loginVm = new LoginViewModel();
         _loginVm.LoginSucceeded += OnLoginSucceeded;
 
-        var loginView = new LoginView
-        {
-            DataContext = _loginVm
-        };
-
+        var loginView = new LoginView { DataContext = _loginVm };
         MainContent.Content = loginView;
-        Title = "Animal Shelter - Prijava";
+        IsLoggedIn = false;
+        WindowTitle = "Animal Shelter - Prijava";
     }
 
-    private void OnLoginSucceeded(object? sender, Models.Korisnik? user)
+    private void OnLoginSucceeded(object? sender, Korisnik? user)
     {
-        // Postavi trenutnog korisnika u sesiju
-        AppSession.CurrentUser = user;  // ako je null, gost
-        // Udalji login event
+        // Postavi trenutnog korisnika
+        AppSession.CurrentUser = user;
+
+        // Ako je korisnik null -> gost, nije prijavljen
+        IsLoggedIn = user != null;
+        WindowTitle = user == null 
+            ? "Animal Shelter - Gost" 
+            : $"Animal Shelter - {user.Ime} {user.Prezime}";
+
+        // Odjavi event da ne bi ponovo reagovao
         if (_loginVm != null)
             _loginVm.LoginSucceeded -= OnLoginSucceeded;
 
-        // Pripremi UdruzenjaViewModel i prikaži
+        // Pripremi UdruzenjaView i prikaži
         var udruzenjaVm = new UdruzenjaViewModel();
         udruzenjaVm.SetOwnerWindow(this);
 
-        var udruzenjaView = new UdruzenjaView
-        {
-            DataContext = udruzenjaVm
-        };
-
+        var udruzenjaView = new UdruzenjaView { DataContext = udruzenjaVm };
         MainContent.Content = udruzenjaView;
-        Title = user == null ? "Animal Shelter - Gost" : $"Animal Shelter - {user.Ime} {user.Prezime}";
+    }
+
+    private void OnLogoutClick(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        // Čisti sesiju i vraća na login
+        AppSession.CurrentUser = null;
+        IsLoggedIn = false;
+        ShowLoginView();
+    }
+
+    // Implementacija INotifyPropertyChanged
+    public new event PropertyChangedEventHandler? PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
