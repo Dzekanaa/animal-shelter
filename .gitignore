@@ -1,0 +1,36 @@
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+
+# Visual Studio
+.vs/
+
+# User files
+*.user
+*.suo
+*.userprefs
+
+# Rider caches
+_ReSharper*/
+*.DotSettings.user
+
+# Logs
+*.log
+
+# NuGet
+*.nupkg
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generated folders
+TestResults/
+artifacts/
+publish/
+
+# Avalonia previewer
+*.pdb
