@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.UdruzenjeEditorWindow"
+        x:DataType="vm:UdruzenjeEditorViewModel"
+        Title="Unos/izmjena udruženja"
+        Width="500" Height="600"
+        WindowStartupLocation="CenterOwner">
+    <Window.DataContext>
+        <vm:UdruzenjeEditorViewModel />
+    </Window.DataContext>
+    <Design.DataContext>
+        <vm:UdruzenjeEditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Sačuvaj" Click="OnSacuvajClick" Margin="0,0,5,0"/>
+            <Button Content="Odustani" Click="OnOdustaniClick"/>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Podaci o udruženju" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBlock Text="Naziv*" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Naziv}" Margin="0,0,0,5"/>
+                <TextBlock Text="Opis" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Opis}" AcceptsReturn="True" Height="60" Margin="0,0,0,5"/>
+                <TextBlock Text="Datum osnivanja" Margin="0,5,0,0"/>
+                <DatePicker SelectedDate="{Binding DatumOsnivanja}" Margin="0,0,0,5"/>
+                <TextBlock Text="Telefon" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Telefon}" Margin="0,0,0,5"/>
+                <TextBlock Text="Email" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Email}" Margin="0,0,0,5"/>
+                <TextBlock Text="Adresa" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Adresa}" Margin="0,0,0,5"/>
+
+                <Separator Margin="0,10,0,10"/>
+
+                <!-- Admin sekcija – vidljiva samo prilikom dodavanja -->
+                <StackPanel IsVisible="{Binding !IsEditMode}">
+                    <TextBlock Text="Podaci o administratoru" FontWeight="Bold" Margin="0,0,0,5"/>
+                    <TextBlock Text="Korisničko ime*" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding KorisnickoIme}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Lozinka*" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding Lozinka}" PasswordChar="*" Margin="0,0,0,5"/>
+                    <TextBlock Text="Ime*" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding Ime}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Prezime*" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding Prezime}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Email" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding AdminEmail}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Telefon" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding AdminTelefon}" Margin="0,0,0,5"/>
+                    <TextBlock Text="Adresa*" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding AdminAdresa}" Margin="0,0,0,5"/>
+                </StackPanel>
+
+                <TextBlock Text="* obavezna polja" FontSize="10" Foreground="Gray" Margin="0,10,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

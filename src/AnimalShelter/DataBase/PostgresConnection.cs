@@ -1,4 +1,6 @@
+using System;
 using System.Data;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -10,8 +12,16 @@ public static class PostgresConnection
 
     static PostgresConnection()
     {
+        var basePath = AppContext.BaseDirectory;
+        var configPath = Path.Combine(basePath, "appsettings.json");
+
+        if (!File.Exists(configPath))
+        {
+            throw new FileNotFoundException($"Configuration file not found at: {configPath}");
+        }
+
         var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(basePath)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
         var config = builder.Build();
