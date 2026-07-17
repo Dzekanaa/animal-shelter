@@ -1,9 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:views="clr-namespace:AnimalShelter.Views"
         x:Class="AnimalShelter.Views.MainWindow"
-        Title="Animal Shelter - Prijava"
+        x:Name="self"
+        Title="{Binding WindowTitle, ElementName=self}"
         Width="800" Height="450"
         WindowStartupLocation="CenterScreen">
-    <ContentControl x:Name="MainContent" />
+    <DockPanel>
+        <!-- Gornja traka sa dugmetom za odjavu -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button x:Name="LogoutButton" Content="Odjava" Click="OnLogoutClick" 
+                    IsVisible="{Binding IsLoggedIn, ElementName=self}" />
+        </StackPanel>
+
+        <!-- Glavni sadržaj (LoginView ili drugo) -->
+        <ContentControl x:Name="MainContent" />
+    </DockPanel>
 </Window>
