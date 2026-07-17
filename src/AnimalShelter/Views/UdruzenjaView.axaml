@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+             xmlns:models="clr-namespace:AnimalShelter.Models"
              x:Class="AnimalShelter.Views.UdruzenjaView"
              x:DataType="vm:UdruzenjaViewModel">
     <Design.DataContext>
@@ -27,6 +28,15 @@
                 <DataGridTextColumn Header="Datum osnivanja" Binding="{Binding DatumOsnivanja, StringFormat='dd.MM.yyyy'}" Width="120"/>
                 <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="120"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+                <DataGridTemplateColumn Header="Akcija" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:Udruzenje">
+                            <Button Content="Životinje" 
+                                    Command="{Binding $parent[DataGrid].((vm:UdruzenjaViewModel)DataContext).PrikaziZivotinjeCommand}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

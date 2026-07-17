@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+             x:Class="AnimalShelter.Views.ZivotinjeView"
+             x:DataType="vm:ZivotinjeViewModel">
+    <Design.DataContext>
+        <vm:ZivotinjeViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding DodajCommand}" Content="Dodaj životinju" Margin="0,0,5,0"/>
+            <Button Command="{Binding IzmeniCommand}" Content="Izmeni" Margin="0,0,5,0"/>
+            <Button Command="{Binding ObrisiCommand}" Content="Obriši" Margin="0,0,5,0"/>
+            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+        </StackPanel>
+
+        <!-- Lista -->
+        <DataGrid ItemsSource="{Binding Zivotinje}"
+                  SelectedItem="{Binding SelectedZivotinja}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Naziv" Binding="{Binding Naziv}" Width="*"/>
+                <DataGridTextColumn Header="Kategorija" Binding="{Binding Kategorija}" Width="100"/>
+                <DataGridTextColumn Header="Starost" Binding="{Binding Starost}" Width="70"/>
+                <DataGridTextColumn Header="Pol" Binding="{Binding Pol}" Width="80"/>
+                <DataGridTextColumn Header="Zdravlje" Binding="{Binding ZdravstvenoStanje}" Width="100"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

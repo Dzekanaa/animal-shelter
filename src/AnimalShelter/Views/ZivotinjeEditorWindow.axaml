@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        xmlns:enums="clr-namespace:AnimalShelter.Models.Enums"
+        x:Class="AnimalShelter.Views.ZivotinjeEditorWindow"
+        x:DataType="vm:ZivotinjeEditorViewModel"
+        Title="Unos/izmjena životinje"
+        Width="500" Height="650"
+        WindowStartupLocation="CenterOwner">
+    <Design.DataContext>
+        <vm:ZivotinjeEditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Sačuvaj" Click="OnSacuvajClick" Margin="0,0,5,0"/>
+            <Button Content="Odustani" Click="OnOdustaniClick"/>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Naziv*" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Naziv}" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Kategorija" Margin="0,5,0,0"/>
+                <ComboBox ItemsSource="{Binding KategorijaList}"
+                          SelectedItem="{Binding Kategorija}"
+                          Margin="0,0,0,5"/>
+
+                <TextBlock Text="Starost (godine)" Margin="0,5,0,0"/>
+                <NumericUpDown Value="{Binding Starost}" Minimum="0" Maximum="50" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Pol" Margin="0,5,0,0"/>
+                <ComboBox ItemsSource="{Binding PolList}"
+                          SelectedItem="{Binding Pol}"
+                          Margin="0,0,0,5"/>
+
+                <TextBlock Text="Zdravstveno stanje" Margin="0,5,0,0"/>
+                <ComboBox ItemsSource="{Binding ZdravstvenoStanjeList}"
+                          SelectedItem="{Binding ZdravstvenoStanje}"
+                          Margin="0,0,0,5"/>
+
+                <TextBlock Text="Status" Margin="0,5,0,0"/>
+                <ComboBox ItemsSource="{Binding StatusList}"
+                          SelectedItem="{Binding Status}"
+                          Margin="0,0,0,5"/>
+
+                <TextBlock Text="Opis" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Opis}" AcceptsReturn="True" Height="80" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Slike (URL-ovi odvojeni zarezom)" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Slike}" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Video (URL-ovi odvojeni zarezom)" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Video}" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Udomitelj ID (opciono)" Margin="0,5,0,0"/>
+                <NumericUpDown Value="{Binding UdomiteljId}" Minimum="0" Margin="0,0,0,5"/>
+
+                <TextBlock Text="Volonter ID (opciono)" Margin="0,5,0,0"/>
+                <NumericUpDown Value="{Binding VolonterId}" Minimum="0" Margin="0,0,0,5"/>
+
+                <TextBlock Text="* obavezna polja" FontSize="10" Foreground="Gray" Margin="0,10,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
