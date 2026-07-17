@@ -1,0 +1,8 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="AnimalShelter.Views.ZivotinjeWindow"
+        Title="Životinje udruženja"
+        Width="900" Height="500"
+        WindowStartupLocation="CenterOwner">
+    <!-- OSTAVITI POTPUNO PRAZNO -->
+</Window>

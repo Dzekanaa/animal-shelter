@@ -3,12 +3,15 @@ using System.Data;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
+using AnimalShelter.Models.Enums;
+using Npgsql.NameTranslation;
+using Dapper;
 
 namespace AnimalShelter.Database;
 
 public static class PostgresConnection
 {
-    private static readonly string ConnectionString;
+    private static readonly NpgsqlDataSource DataSource;
 
     static PostgresConnection()
     {
@@ -25,14 +28,20 @@ public static class PostgresConnection
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
         var config = builder.Build();
-        ConnectionString = config.GetConnectionString("DefaultConnection")
-                           ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var connectionString = config.GetConnectionString("DefaultConnection")
+                               ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+        
+
+        DataSource = dataSourceBuilder.Build();
+        
+        
+
     }
 
     public static IDbConnection CreateConnection()
     {
-        var connection = new NpgsqlConnection(ConnectionString);
-        connection.Open();
-        return connection;
+        return DataSource.OpenConnection();
     }
 }

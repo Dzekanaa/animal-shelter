@@ -6,22 +6,18 @@ skinparam packageStyle rectangle
 
 actor Osoba
 actor Korisnik
-actor Udomitelj
 actor Volonter
 actor "Administrator udruženja" as Admin
 actor "Sistemski administrator" as SysAdmin
 
-Osoba <|-- Korisnik
 
-Korisnik <|-- Udomitelj
 Korisnik <|-- Volonter
 Korisnik <|-- Admin
-Korisnik <|-- SysAdmin
 
 rectangle "Aplikacija za udomljavanje životinja" {
 
 '=========================
-' Opšte
+' Osoba i Korisnik
 '=========================
 
 usecase "Prijava" as UC1
@@ -32,7 +28,8 @@ usecase "Pregled dostupnih\nživotinja" as UC4
 usecase "Zahtev za\nvolontiranje" as UC5
 usecase "Zahtev za\nudomljavanje" as UC6
 
-usecase "Vrati\nživotinju" as UC7
+usecase "Pregled životinja\nu udruženju" as UC29
+usecase "<<CRUD>>\nIzmena\nkorisničkih\npodataka" as UC30
 
 '=========================
 ' Sistemski administrator
@@ -51,34 +48,26 @@ usecase "<<CRUD>>\nRegistracija\nvolontera" as UC11
 usecase "Prihvatanje\nzahteva za\nvolontiranje" as UC12
 usecase "Odbijanje\nzahteva za\nvolontiranje" as UC13
 
-usecase "Promocija\nvolontera" as UC14
 usecase "Pregled svih\nvolontera udruženja" as UC15
-
-usecase "Upravljanje\ndonacijama" as UC16
 
 usecase "Izveštaj o\nudomljavanjima" as UC17
 usecase "Objava izveštaja\no udomljavanjima" as UC18
 
-usecase "Izveštaj o\ndonacijama" as UC19
-usecase "Objava izveštaja\no donacijama" as UC20
-
 usecase "Import i pregled\nizvoda računa\nudruženja" as UC21
 
-usecase "Prihvatanje ili\nodbijanje zahteva\nza udomljavanje" as UC22
-
-usecase "Slanje\nobaveštenja\nudomitelju" as UC23
+usecase "Prihvatanje zahteva\nza udomljavanje" as UC22
 
 usecase "Prikaz svih\nudomitelja" as UC24
 
 usecase "<<CRUD>>\nRegistracija\nudomitelja" as UC25
 
+usecase "<<CRUD>>\nDodavanje\nživotinja" as UC26
+
+usecase "Odbijanje zahteva\nza udomljavanje" as UC31
+
 '=========================
 ' Volonter
 '=========================
-
-usecase "<<CRUD>>\nDodavanje\nživotinja" as UC26
-
-usecase "<<CRUD>>\nUnošenje\npodataka o\nudomljavanju" as UC27
 
 usecase "Uzimanje\nživotinje u\nsmeštaj" as UC28
 
@@ -89,36 +78,33 @@ usecase "Uzimanje\nživotinje u\nsmeštaj" as UC28
 '=========================
 
 Osoba --> UC3
-Osoba --> UC4
 Osoba --> UC5
 Osoba --> UC6
 
 Korisnik --> UC1
 Korisnik --> UC2
-
-Udomitelj --> UC7
+Korisnik --> UC29
+Korisnik --> UC30
 
 SysAdmin --> UC8
 SysAdmin --> UC10
+SysAdmin --> UC1
+SysAdmin --> UC2
 
 Admin --> UC12
 Admin --> UC13
-Admin --> UC14
 Admin --> UC15
-Admin --> UC16
 Admin --> UC17
-Admin --> UC19
 Admin --> UC21
 Admin --> UC22
 Admin --> UC24
-Admin --> UC25
+Admin --> UC26
+Admin --> UC31
 
 Volonter --> UC22
 Volonter --> UC24
-Volonter --> UC25
-Volonter --> UC26
-Volonter --> UC27
 Volonter --> UC28
+Volonter --> UC31
 
 '=========================
 ' include
@@ -128,13 +114,13 @@ UC8 ..> UC9 : <<include>>
 
 UC12 ..> UC11 : <<include>>
 
-UC22 ..> UC23 : <<include>>
-
 '=========================
 ' extend
 '=========================
 
+UC4 ..> UC3 : <<extend>>
+
 UC18 ..> UC17 : <<extend>>
 
-UC20 ..> UC19 : <<extend>>
+UC25 ..> UC22 : <<extend>>
 @enduml
