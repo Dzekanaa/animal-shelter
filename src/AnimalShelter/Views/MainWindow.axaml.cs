@@ -31,11 +31,13 @@ public partial class MainWindow : Window
 
     private void OnLoginSucceeded(object? sender, Models.Korisnik? user)
     {
-        // Nakon uspješne prijave, prelazimo na UdruzenjaView
-        if (user == null) return;
+        // Postavi trenutnog korisnika u sesiju
+        AppSession.CurrentUser = user;  // ako je null, gost
+        // Udalji login event
+        if (_loginVm != null)
+            _loginVm.LoginSucceeded -= OnLoginSucceeded;
 
-        // Opciono: možemo čuvati prijavljenog korisnika negdje (npr. App.Current.Properties)
-        // Ovdje samo prelazimo na listu udruženja
+        // Pripremi UdruzenjaViewModel i prikaži
         var udruzenjaVm = new UdruzenjaViewModel();
         udruzenjaVm.SetOwnerWindow(this);
 
@@ -45,10 +47,6 @@ public partial class MainWindow : Window
         };
 
         MainContent.Content = udruzenjaView;
-        Title = "Animal Shelter - Upravljanje udruženjima";
-
-        // Opciono: odjavimo LoginSucceeded da ne bi slučajno ponovo reagovao
-        if (_loginVm != null)
-            _loginVm.LoginSucceeded -= OnLoginSucceeded;
+        Title = user == null ? "Animal Shelter - Gost" : $"Animal Shelter - {user.Ime} {user.Prezime}";
     }
 }

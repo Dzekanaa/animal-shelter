@@ -13,7 +13,12 @@
             <Button Command="{Binding DodajCommand}" Content="Dodaj životinju" Margin="0,0,5,0"/>
             <Button Command="{Binding IzmeniCommand}" Content="Izmeni" Margin="0,0,5,0"/>
             <Button Command="{Binding ObrisiCommand}" Content="Obriši" Margin="0,0,5,0"/>
+            <Button Command="{Binding PrivremeniSmestajCommand}" 
+                    Content="Privremeni smještaj" 
+                    IsEnabled="{Binding CanDoPrivremeniSmestaj}"
+                    Margin="0,0,5,0"/>
             <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+
         </StackPanel>
 
         <!-- Lista -->

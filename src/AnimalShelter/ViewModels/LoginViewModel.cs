@@ -28,6 +28,7 @@ public partial class LoginViewModel : ObservableObject
     public bool CanLogin => !IsLoading && !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
     public ICommand LoginCommand { get; }
+    public ICommand GuestLoginCommand { get; } 
     public ICommand OdustaniCommand { get; }
 
     public event EventHandler<Korisnik?>? LoginSucceeded;
@@ -35,11 +36,17 @@ public partial class LoginViewModel : ObservableObject
     public LoginViewModel()
     {
         _korisnikService = new KorisnikService();
-        // Koristimo CanLogin svojstvo za CanExecute
+        GuestLoginCommand = new RelayCommand(GuestLogin);
         LoginCommand = new AsyncRelayCommand(LoginAsync, () => CanLogin);
         OdustaniCommand = new RelayCommand(Odustani);
     }
 
+    private void GuestLogin()
+    {
+        // Prijavljujemo se kao gost – šaljemo null korisnika
+        LoginSucceeded?.Invoke(this, null);
+    }
+    
     // Osiguravamo da se CanLogin osvježi kada se promijene Username, Password ili IsLoading
     partial void OnUsernameChanged(string value)
     {

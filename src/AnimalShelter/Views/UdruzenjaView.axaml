@@ -9,12 +9,13 @@
     </Design.DataContext>
 
     <DockPanel>
+        <TextBlock Text="{Binding CanManageUdruzenja}" />
         <!-- Toolbar -->
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
-            <Button Command="{Binding DodajCommand}" Content="Dodaj" Margin="0,0,5,0"/>
-            <Button Command="{Binding IzmeniCommand}" Content="Izmeni" Margin="0,0,5,0"/>
-            <Button Command="{Binding ObrisiCommand}" Content="Obriši" Margin="0,0,5,0"/>
-            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+            <Button Command="{Binding DodajCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Dodaj" Margin="0,0,5,0"/>
+            <Button Command="{Binding IzmeniCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Izmeni" Margin="0,0,5,0"/>
+            <Button Command="{Binding ObrisiCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Obriši" Margin="0,0,5,0"/>
+            <Button Command="{Binding OsveziCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Osveži" />
         </StackPanel>
 
         <!-- Lista -->

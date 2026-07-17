@@ -30,6 +30,8 @@ public partial class ZivotinjeViewModel : ObservableObject
     public ICommand IzmeniCommand { get; }
     public ICommand ObrisiCommand { get; }
     public ICommand OsveziCommand { get; }
+    public ICommand PrivremeniSmestajCommand { get; }  // NOVO
+    public bool CanDoPrivremeniSmestaj => AppSession.IsVolonter && SelectedZivotinja != null;
 
     private Window? _ownerWindow;
 
@@ -38,17 +40,37 @@ public partial class ZivotinjeViewModel : ObservableObject
         _udruzenjeId = udruzenjeId;
         _service = new ZivotinjaService();
 
-        DodajCommand = new AsyncRelayCommand(DodajAsync);
-        IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => SelectedZivotinja != null);
-        ObrisiCommand = new AsyncRelayCommand(ObrisiAsync, () => SelectedZivotinja != null);
+        // Dozvole
+        bool CanManageZivotinje() => AppSession.IsSistemskiAdmin || AppSession.IsAdminUdruzenja;
+        bool CanDoPrivremeniSmestaj() => AppSession.IsVolonter && SelectedZivotinja != null;
+
+        DodajCommand = new AsyncRelayCommand(DodajAsync, CanManageZivotinje);
+        IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => CanManageZivotinje() && SelectedZivotinja != null);
+        ObrisiCommand = new AsyncRelayCommand(ObrisiAsync, () => CanManageZivotinje() && SelectedZivotinja != null);
         OsveziCommand = new AsyncRelayCommand(OsveziAsync);
+        PrivremeniSmestajCommand = new AsyncRelayCommand(PrivremeniSmestajAsync, CanDoPrivremeniSmestaj);
 
         _ = OsveziAsync();
     }
+    
+    
+    private async Task PrivremeniSmestajAsync()
+    {
+        if (SelectedZivotinja == null) return;
+        // Boilerplate – samo prikazujemo poruku
+        var msg = MessageBoxManager.GetMessageBoxStandard(
+            "Privremeni smještaj",
+            $"Životinja '{SelectedZivotinja.Naziv}' je smještena u privremeni smještaj.",
+            ButtonEnum.Ok,
+            Icon.Info);
+        await msg.ShowWindowDialogAsync(_ownerWindow);
+    }
     partial void OnSelectedZivotinjaChanged(Zivotinja? value)
     {
+        OnPropertyChanged(nameof(CanDoPrivremeniSmestaj));
         (IzmeniCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         (ObrisiCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
+        (PrivremeniSmestajCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
     }
     public void SetOwnerWindow(Window owner) => _ownerWindow = owner;
 
