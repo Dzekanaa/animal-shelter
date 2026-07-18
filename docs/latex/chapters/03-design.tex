@@ -4,6 +4,23 @@
 
 Dizajn sistema je modeliran korišćenjem UML dijagrama koji prikazuju različite aspekte arhitekture.
 
+\subsection{Dijagram slučajeva korišćenja (Use Case)}
+
+Dijagram slučajeva korišćenja prikazuje funkcionalnosti sistema iz perspektive različitih aktera.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{01-use-case.jpeg}
+    \caption{Dijagram slučajeva korišćenja}
+    \label{fig:use-case}
+\end{figure}
+
+Akteri su podeljeni na:
+\begin{itemize}
+    \item \textbf{Neregistrovani korisnik (Gost)} – može pregledati životinje, podneti zahtev za udomljavanje i prijavu za volontiranje.
+    \item \textbf{Registrovani korisnici} (SistemskiAdmin, AdminUdruženja, Volonter)  – imaju različite nivoe pristupa i odgovornosti.
+\end{itemize}
+
 \subsection{Dijagram klasa}
 
 Dijagram klasa prikazuje strukturnu dekompoziciju sistema i odnose između entiteta.
@@ -20,88 +37,158 @@ Dijagram klasa prikazuje strukturnu dekompoziciju sistema i odnose između entit
 Sistem definiše apstraktnu klasu \texttt{Korisnik} iz koje nasleđuju specifični tipovi korisnika:
 
 \begin{itemize}
-    \item \textbf{SistemskiAdmin}: Ima pristup globalnim podacima, može registrovati nova udruženja
-    \item \textbf{AdminUdruženja}: Upravlja specifičnim udruženjem, dozvolama i izveštajima
-    \item \textbf{Volonter}: Dodaje životinje, upravlja zahtevima, povezuje udomitelje
-    \item \textbf{Udomitelj}: Može biti registrovan ili neregistrovan, unosi podatke pri zahtevu
-    \item \textbf{NeregistrovaniKorisnik}: Može pregledati životinje i poslati zahtev
+    \item \textbf{SistemskiAdmin}: Ima pristup globalnim podacima, može registrovati nova udruženja, upravljati svim korisnicima i obavljati CRUD operacije nad udruženjima.
+    \item \textbf{AdminUdruženja}: Upravlja specifičnim udruženjem, dozvolama, izveštajima, donacijama i prijavama za volontiranje. Može obavljati CRUD operacije nad životinjama.
+    \item \textbf{Volonter}: Dodaje životinje, upravlja zahtevima za udomljavanje, može odobravati/odbijati zahteve (zajedno sa administratorom), vodi privremeni smeštaj.
 \end{itemize}
 
-\subsubsection{Entiteti}
+\subsubsection{Ključni entiteti}
 
 \paragraph{Udruženje}
-Reprezentuje organizaciju koja upravlja udomljavanjem. Sadrži:
-
+Reprezentuje organizaciju koja upravlja udomljavanjem. Sadrži osnovne podatke (naziv, opis, datum osnivanja, kontakt informacije) i povezano je sa više životinja, volontera i najmanje jednim administratorom.
 
 \paragraph{Životinja}
-Reprezentuje životnju dostupnu za udomljavanje. Ima tri stanja:
-\begin{itemize}
-    \item DOSTUPNA - životnja nije u procesu udomljavanje
-    \item ZAUZETA - postoji aktivna prijava za udomljavanje
-    \item UDOMLJENA - životnja je udomljena
-\end{itemize}
+Reprezentuje životinju dostupnu za udomljavanje. Ima tri stanja (dostupna, zauzeta, udomljena) i čuva podatke o kategoriji, rasi, polu, starosti, zdravstvenom stanju, slikama i videu.
 
-\paragraph{Udomljavanje}
-Predstavlja relaciju između životnje i udomitelja sa sledećim atributima:
-\begin{itemize}
-    \item Napomena za udomitelja
-    \item Datum udomljavanje
-    \item Status komunikacije (SMS, email, ručno)
-\end{itemize}
+\paragraph{Zahtev za udomljavanje}
+Sadrži kontakt podatke podnosioca (ime, prezime, telefon, email, adresa), način obaveštavanja, status (ČEKA, PRIHVAĆEN, ODBIJEN) i vremenske oznake.
+
+\paragraph{Prijava za volontiranje}
+Podnosi je neregistrovani korisnik za određeno udruženje. Sadrži kontakt podatke i status. Kada se prihvati, automatski se kreira korisnik tipa Volonter.
 
 \paragraph{Donacija}
-Donacija može biti:
-\begin{itemize}
-    \item Opšta - donacija za udruženje (životinja = NULL)
-    \item Namenjena - donacija za specifičnu životnju
-\end{itemize}
-
-Vrste donacija: hrana, voda, lekovi, oprema, novac.
+Može biti opšta ili namenjena specifičnoj životinji. Vrste: hrana, voda, lekovi, oprema, novac.
 
 \paragraph{Izveštaj}
-Sistem generiše izveštaje na dnevnom, nedelnom i mesečnom nivou sa sledećom statistikom:
+Generiše se na dnevnom, nedeljnom i mesečnom nivou sa statistikom o udomljavanjima i donacijama.
+
+\subsection{Dijagrami sekvence}
+
+Dijagrami sekvence prikazuju interakcije između aktera i sistema za tri ključna procesa:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{03-sequence-diagram-dzektor.png}
+    \caption{Dijagram sekvence – proces podnošenja zahteva za udomljavanje}
+    \label{fig:seq-dzektor}
+\end{figure}
+\textit{Opis:} Prikazuje tok od popunjavanja formulara od strane neregistrovanog korisnika, preko validacije i čuvanja zahteva (status = CEKA), do obaveštavanja administratora/volontera o novom zahtevu. Uključuje granu za nevalidan zahtev.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{03-sequence-diagram-nixa.png}
+    \caption{Dijagram sekvence – proces generisanja izveštaja}
+    \label{fig:seq-nixa}
+\end{figure}
+\textit{Opis:} Administrator bira opciju da generiše izveštaj vezan asdfza udruženje. Definiše tip izveštaja, kao i period na koji se odnose podaci. Generisanje izveštaja prati evaluaciju statistike neophodnu za njegovo formiranje. Nakon prikaza izveštaja administratoru udruženja, nudi mu se opcija objave izveštaja koju može da prihvati ili odbaci.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{03-sequence-diagram-relja.jpeg}
+    \caption{Dijagram sekvence – proces prijave za volontiranje}
+    \label{fig:seq-relja}
+\end{figure}
+
+\subsection{Dijagrami aktivnosti}
+
+Dijagrami aktivnosti opisuju poslovne procese sa akcentom na tokove odluka i paralelne aktivnosti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{04-activity-diagram-dzektosdfasdfasdfvar.png}
+    \caption{Dijagram aktivnosti – podnošenje i obrada zahteva za udomljavanje}
+    \label{fig:act-dzektor}
+\end{figure}
+\textit{Opis:} Celokupan proces od popunjavanja zahteva od strane gosta, preko validacije (sa granom za neuspeh), obaveštavanja administratora/volontera, donošenja odluke (prihvaćen/odbijen), do konačnog statusa i preuzimanja ljubimca. Obuhvaćene su obe grane (Da/Ne) za svaku odluku.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{04-activity-diagram-nixa.png}
+    \caption{Dijagram aktivnosti – generisanje izveštaja}
+    \label{fig:act-nixa}
+\end{figure}
+\textit{Opis:} Administrator udruženja bira opciju generisanja izveštaja, koju prati definisanje njegovog tipa i perioda za koji je vezan. Formiranjem prateće statistike, izveštaj se prikazuje administratoru udruženja uz opciju objave.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{04-activity-diagram-relja.jpeg}
+    \caption{Dijagram aktivnosti – upravljanje životinjama i privremeni smeštaj}
+    \label{fig:act-relja}
+\end{figure}
+\textit{Opis:} Volonter dodaje novu životinju (sa svim atributima) ili ažurira postojeće podatke. Takođe može smestiti životinju u privremeni smeštaj (samo ako je DOSTUPNA) – status postaje ZAUZETA. Prikazan je i tok brisanja životinje (ako nije udomljena).
+
+\subsection{Dijagram stanja}
+
+Dijagram stanja prikazuje dozvoljene prelaze između statusa za ključne entitete.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{05-state-diagram.png}
+    \caption{Dijagram stanja – obrada zahteva za udomljavanje}
+    \label{fig:state}
+\end{figure}
+\textit{Opis:}
 \begin{itemize}
-    \item Broj udomljenih životinja
-    \item Broj vraćenih životinja
-    \item Ukupna donacija po vrsti
+    \item Početno stanje \texttt{Čekanje} – posetilac sajta je podneo prijavu za udomljavanje.
+    \item Iz stanja \texttt{Čekanje} mogući su prelazi:
+        \begin{itemize}
+            \item u \texttt{Prihvaćena} – administrator ili volonter je prihvatio zahtev.
+            \item u \texttt{Odbijena} – administrator ili volonter je odbio zahtev, ili je neko drugi udomio životinju.
+        \end{itemize}
+    \item Iz stanja \texttt{Prihvaćena} mogući su prelazi:
+        \begin{itemize}
+            \item u \texttt{Preuzeta} – podnosilac je preuzeo životinju (status životinje postaje \texttt{UDOMLJENA}).
+            \item nazad u \texttt{Čekanje} – reevaluacija (npr. podnosilac odustane ili se pojave novi uslovi).
+        \end{itemize}
+    \item Iz stanja \texttt{Odbijena} moguć je povratak u \texttt{Čekanje} – reevaluacija (npr. podnosilac ponovo podnese zahtev).
+    \item Krajnja stanja: \texttt{Preuzeta} (uspešno udomljavanje) i \texttt{Odbijena} (zahtev odbijen).
 \end{itemize}
 
 \section{Principi dizajna}
 
-\subsection{Separacija gladanja (Separation of Concerns)}
+\subsection{Separacija odgovornosti (Separation of Concerns)}
 
 Arhitektura je organizovana u tri sloja:
 
 \begin{itemize}
-    \item \textbf{Presentation Layer} - Avalonia UI sa MVVM arhitekturom
-    \item \textbf{Business Logic Layer} - Poslovne pravile i operacije
-    \item \textbf{Data Access Layer} - Komunikacija sa bazom podataka
+    \item \textbf{Presentation Layer} – Avalonia UI sa MVVM arhitekturom (View, ViewModel, Model)
+    \item \textbf{Business Logic Layer} – Servisi koji implementiraju poslovna pravila (validacija, transakcije, autorizacija)
+    \item \textbf{Data Access Layer} – Komunikacija sa PostgreSQL bazom podataka preko Dapper-a i Npgsql
 \end{itemize}
 
 \subsection{SOLID principi}
 
 \begin{description}
-    \item[S - Single Responsibility] Svaka klasa ima jednu odgovornost
-    \item[O - Open/Closed] Klase su otvorene za proširenje, zatvorene za izmenu
-    \item[L - Liskov Substitution] Izvedene klase mogu zamenjivati bazne klase
-    \item[I - Interface Segregation] Interfejsi su specifični i maleni
-    \item[D - Dependency Inversion] Zavisnosti od abstraktnih, a ne konkretnih klasa
+    \item[S – Single Responsibility] Svaka klasa ima jednu odgovornost (npr. servisi za različite entitete)
+    \item[O – Open/Closed] Klase su otvorene za proširenje (npr. dodavanje novih tipova izveštaja) bez izmene postojećeg koda
+    \item[L – Liskov Substitution] Izvedene klase (npr. različiti tipovi korisnika) mogu zamenjivati baznu klasu \texttt{Korisnik}
+    \item[I – Interface Segregation] Korišćeni su mali, specifični interfejsi (npr. servisi za specifične funkcionalnosti)
+    \item[D – Dependency Inversion] Zavisnosti su usmerene ka abstrakcijama (servisi zavise od interfejsa za repozitorijume)
 \end{description}
 
 \section{Baza podataka}
 
-Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na treći normalni oblik (3NF).
+Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na treći normalni oblik (3NF) i koristi enume za statusne vrednosti.
 
 \subsection{Ključne tabele}
 
 \begin{itemize}
-    \item \texttt{Korisnici} - sve vrste korisnika
-    \item \texttt{Udruženja} - registrovana udruženja
-    \item \texttt{Životinje} - dostupne životnje
-    \item \texttt{Zahtevi} - zahtevi za udomljavanje
-    \item \texttt{Udomljavanje} - istorija udomljavanja
-    \item \texttt{Donacije} - evidencija donacija
-    \item \texttt{Izveštaji} - generirani izveštaji
+    \item \texttt{udruzenje} – registrovana udruženja
+    \item \texttt{korisnik} – svi korisnici (tipovi: SistemskiAdmin, AdminUdruzenja, Volonter, Udomitelj)
+    \item \texttt{zivotinja} – životinje sa svim atributima i statusom
+    \item \texttt{zahtevzaudomljavanje} – zahtevi za udomljavanje (uključuju i podatke o gostu)
+    \item \texttt{prijavazavolontiranje} – prijave za volontiranje
+    \item \texttt{izvestaj} – generisani izveštaji
+\end{itemize}
+
+\subsection{Indeksi i ograničenja}
+
+Postavljeni su indeksi na sve strane ključeve i često korišćene kolone (status, datum). Koriste se triggeri za održavanje konzistentnosti:
+\begin{itemize}
+    \item Samo \texttt{AdminUdruzenja} sme imati \texttt{udruzenje\_id}
+    \item \texttt{udomitelj\_id} mora referencirati korisnika tipa \texttt{Udomitelj}
+    \item \texttt{volonter\_id} mora referencirati korisnika tipa \texttt{Volonter}
+    \item \texttt{podnosilac\_id} (u zahtevima) može biti NULL (za goste) ili referencirati \texttt{Udomitelja}
 \end{itemize}
 
 \section{Tehnološki stek}
@@ -118,9 +205,13 @@ Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na
         \hline
         UI Framework & Avalonia 11.3 \\
         \hline
-        Baza podataka & PostgreSQL \\
+        Baza podataka & PostgreSQL 16 \\
+        \hline
+        ORM / Data pristup & Dapper + Npgsql \\
         \hline
         Verzijski sistem & Git/GitHub \\
+        \hline
+        Izrada dokumentacije & \LaTeX{} + PlantUML \\
         \hline
     \end{tabularx}
     \caption{Tehnološki stek}
