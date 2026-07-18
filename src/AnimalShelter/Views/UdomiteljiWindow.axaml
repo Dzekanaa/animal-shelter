@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.UdomiteljiWindow"
+        Title="Popis udomitelja"
+        Width="800" Height="450"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:UdomiteljiViewModel">
+    <Design.DataContext>
+        <vm:UdomiteljiViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Content="Osveži" Command="{Binding LoadUdomiteljiAsync}" />
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Udomitelji}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Ime" Binding="{Binding Ime}" Width="100"/>
+                <DataGridTextColumn Header="Prezime" Binding="{Binding Prezime}" Width="100"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+                <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100"/>
+                <DataGridTextColumn Header="Adresa" Binding="{Binding Adresa}" Width="*"/>
+                <DataGridTextColumn Header="Registriran" Binding="{Binding DatumRegistracije, StringFormat='dd.MM.yyyy'}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

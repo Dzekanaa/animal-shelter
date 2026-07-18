@@ -37,4 +37,17 @@ public class KorisnikService
 
         return user;
     }
+    
+    public IEnumerable<Korisnik> GetAllUdomitelji()
+    {
+        const string sql = @"
+        SELECT id, tip_korisnika, korisnicko_ime, ime, prezime, 
+               datum_registracije, telefon, email, adresa, udruzenje_id
+        FROM korisnik
+        WHERE tip_korisnika = 'Udomitelj'::tip_korisnika
+        ORDER BY prezime, ime
+    ";
+        using var connection = PostgresConnection.CreateConnection();
+        return connection.Query<Korisnik>(sql);
+    }
 }
