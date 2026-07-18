@@ -76,7 +76,8 @@ public partial class UdruzenjaViewModel : ObservableObject
     
     private async Task PregledIzvodaAsync()
     {
-        var vm = new StatementViewModel();
+        if (AppSession.CurrentUser?.UdruzenjeId == null) return;
+        var vm = new StatementViewModel(AppSession.CurrentUser.UdruzenjeId.Value);
         var window = new StatementWindow { DataContext = vm };
         await window.ShowDialog(_ownerWindow);
     }

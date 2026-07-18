@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Threading;
@@ -12,6 +14,7 @@ namespace AnimalShelter.ViewModels;
 public partial class StatementViewModel : ObservableObject
 {
     private readonly StatementService _service = new();
+    private readonly int _udruzenjeId;  // ID udruženja admina
 
     [ObservableProperty]
     private ObservableCollection<RacunStavka> _stavke = new();
@@ -21,10 +24,12 @@ public partial class StatementViewModel : ObservableObject
 
     public ICommand UcitajCommand { get; }
 
-    public StatementViewModel()
+    // Konstruktor prima ID udruženja
+    public StatementViewModel(int udruzenjeId)
     {
+        _udruzenjeId = udruzenjeId;
         UcitajCommand = new AsyncRelayCommand(UcitajAsync);
-        _ = UcitajAsync(); // automatski učitaj na otvaranju
+        _ = UcitajAsync();
     }
 
     private async Task UcitajAsync()
@@ -32,22 +37,25 @@ public partial class StatementViewModel : ObservableObject
         IsLoading = true;
         try
         {
-            // Putanja do datoteke – relativna u odnosu na izvršni folder
             var filePath = Path.Combine(AppContext.BaseDirectory, "Data", "Statements", "izvodi.txt");
-            var lista = await Task.Run(() => _service.ImportFromFile(filePath));
+            var sveStavke = await Task.Run(() => _service.ImportFromFile(filePath));
+
+            // Filtriraj samo one čiji je ID jednak ID-ju udruženja
+            var filtrirane = sveStavke.FindAll(s => s.Id == _udruzenjeId);
+
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Stavke.Clear();
-                foreach (var item in lista)
+                foreach (var item in filtrirane)
                     Stavke.Add(item);
             });
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             // opciono: prikaži poruku o grešci
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                // možemo koristiti MessageBox
+                // npr. MessageBox
             });
         }
         finally

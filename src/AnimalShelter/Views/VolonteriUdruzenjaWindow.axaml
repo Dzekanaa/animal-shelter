@@ -12,8 +12,6 @@
 
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
-            <TextBox Text="{Binding Filter}" Watermark="Pretraži (ime, prezime, email...)" Width="250" Margin="0,0,10,0"/>
-            <Button Command="{Binding PretraziCommand}" Content="Pretraži" Margin="0,0,10,0"/>
             <Button Command="{Binding OsveziCommand}" Content="Osveži" />
         </StackPanel>
 
