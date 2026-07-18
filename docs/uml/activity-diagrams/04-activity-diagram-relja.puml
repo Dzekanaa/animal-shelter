@@ -1,0 +1,61 @@
+@startuml
+title Obrada zahteva za volontiranje
+
+|Osoba|
+
+start
+
+:Pošalji zahtev za volontiranje;
+
+|Sistem|
+
+:Primi zahtev;
+:Validiraj zahtev;
+
+if (Da li je validan?) then (Nije validan)
+
+:Vrati grešku\n(zahtev nije validan);
+stop
+
+else (Validan)
+
+:Sačuvaj zahtev;
+:Status prijave = ČEKA;
+:Obavesti administratora;
+
+|Administrator udruženja|
+
+:Pregledaj zahtev;
+
+if (Prihvatiti?) then (Da)
+
+:Prihvati zahtev;
+
+|Sistem|
+
+:Status prijave = PRIHVAĆEN;
+:Registruj volontera;
+:Dodeli korisničko ime i lozinku;
+
+else (Ne)
+
+|Administrator udruženja|
+
+:Odbij zahtev;
+
+|Sistem|
+
+:Status prijave = ODBIJEN;
+
+endif
+
+|Sistem|
+
+:Pošalji obaveštenje;
+
+|Osoba|
+
+:Primi obaveštenje;
+
+stop
+@enduml
