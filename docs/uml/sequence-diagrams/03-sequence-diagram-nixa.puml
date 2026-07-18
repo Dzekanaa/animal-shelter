@@ -1,0 +1,51 @@
+@startuml
+title Generisanje izveštaja
+
+actor "Administrator udruženja" as Admin
+
+boundary "Forma za izveštaje" as UI
+control "Kontroler izveštaja" as Controller
+entity Izvestaj
+
+Admin -> UI : Izabere "Generiši izveštaj"
+
+UI --> Admin : Prikazuje formu
+
+Admin -> UI : Unese tip i period
+
+UI -> Controller : generisiIzvestaj(tip, period)
+
+create Izvestaj
+Controller -> Izvestaj : <<create>>
+
+activate Izvestaj
+
+Izvestaj -> Izvestaj : prikupiPodatke(tip, period)
+Izvestaj -> Izvestaj : generisiStatistiku()
+Izvestaj -> Izvestaj : formirajIzvestaj()
+
+Izvestaj --> Controller : izvestaj
+
+deactivate Izvestaj
+
+Controller --> UI : izvestaj
+
+UI --> Admin : Prikazuje izveštaj
+
+opt Objavi izveštaj
+
+    Admin -> UI : Objavi izveštaj
+
+    UI -> Controller : objaviIzvestaj(izvestaj)
+
+    Controller -> Izvestaj : objavi()
+
+    Izvestaj --> Controller : potvrda
+
+    Controller --> UI : potvrda
+
+    UI --> Admin : Izveštaj objavljen
+
+end
+
+@enduml
