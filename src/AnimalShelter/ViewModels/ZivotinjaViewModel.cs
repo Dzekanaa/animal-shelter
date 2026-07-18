@@ -92,12 +92,27 @@ public partial class ZivotinjeViewModel : ObservableObject
     private async Task ZahtevZaUdomljavanjeAsync()
     {
         if (SelectedZivotinja == null) return;
-        var msg = MessageBoxManager.GetMessageBoxStandard(
-            "Zahtev za udomljavanje",
-            $"Zahtev za udomljavanje životinje '{SelectedZivotinja.Naziv}' je poslat.",
-            ButtonEnum.Ok,
-            Icon.Info);
-        await msg.ShowWindowDialogAsync(_ownerWindow);
+
+        var editorVm = new AdoptionRequestEditorViewModel();
+        var window = new AdoptionRequestEditorWindow { DataContext = editorVm };
+        var result = await window.ShowDialog<bool?>(_ownerWindow);
+        if (result == true)
+        {
+            var dto = new AdoptionRequestCreateDto
+            {
+                ZivotinjaId = SelectedZivotinja.Id,
+                Ime = editorVm.Ime,
+                Prezime = editorVm.Prezime,
+                Telefon = editorVm.Telefon,
+                Email = editorVm.Email,
+                Adresa = editorVm.Adresa,
+                NacinObavestavanja = editorVm.NacinObavestavanja
+            };
+            await Task.Run(() => new ZahtevUdomljavanjeService().Create(dto));
+
+            var msg = MessageBoxManager.GetMessageBoxStandard("Uspeh", "Zahtev je poslat.", ButtonEnum.Ok, Icon.Success);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+        }
     }
     
     
