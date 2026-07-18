@@ -14,7 +14,7 @@ start
 
 if (Da li je validan?) then (Nije validan)
 
-:Vrati grešku\n(zahtev nije validan);
+:Vrati grešku;
 stop
 
 else (Validan)
