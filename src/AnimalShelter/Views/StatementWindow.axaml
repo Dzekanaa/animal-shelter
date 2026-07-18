@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.StatementWindow"
+        Title="Izvodi računa udruženja"
+        Width="700" Height="400"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:StatementViewModel">
+    <Design.DataContext>
+        <vm:StatementViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding UcitajCommand}" Content="Osveži / Učitaj" Margin="0,0,10,0"/>
+            <TextBlock Text="{Binding IsLoading}"
+                       IsVisible="{Binding IsLoading}" Foreground="Blue" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Stavke}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Datum" Binding="{Binding Datum, StringFormat='yyyy-MM-dd'}" Width="120"/>
+                <DataGridTextColumn Header="Iznos" Binding="{Binding Iznos, StringFormat='{}{0:F2}'}" Width="120"/>
+                <DataGridTextColumn Header="Banka" Binding="{Binding Banka}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
