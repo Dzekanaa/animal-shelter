@@ -37,10 +37,13 @@ public partial class UdruzenjaViewModel : ObservableObject
     public ICommand PrikaziUdomiteljeCommand { get; }
     public ICommand PrikaziMojeZivotinjeCommand { get; }
     public ICommand PregledZahtevaCommand { get; }
+    public ICommand PregledSvihKorisnikaCommand { get; }
+    public ICommand PregledVolonteraCommand { get; }
     
     public bool CanManageUdruzenja => AppSession.IsSistemskiAdmin;
     public bool isUdruzenjeAdmin => AppSession.IsAdminUdruzenja;
     public bool CanPregledZahteva => AppSession.IsAdminUdruzenja || AppSession.IsVolonter;
+    public bool CanViewAllUsers => AppSession.IsSistemskiAdmin;
 
     private Window? _ownerWindow;
 
@@ -52,6 +55,9 @@ public partial class UdruzenjaViewModel : ObservableObject
         bool CanManageUdruzenja() => AppSession.IsSistemskiAdmin;
         
         
+        PregledVolonteraCommand = new AsyncRelayCommand(PregledVolonteraAsync, () => 
+            AppSession.IsAdminUdruzenja && AppSession.CurrentUser?.UdruzenjeId != null);
+        PregledSvihKorisnikaCommand = new AsyncRelayCommand(PregledSvihKorisnikaAsync, () => AppSession.IsSistemskiAdmin);
         PregledZahtevaCommand = new AsyncRelayCommand(PregledZahtevaAsync, () => 
             AppSession.IsAdminUdruzenja || AppSession.IsVolonter);
         PrikaziMojeZivotinjeCommand = new AsyncRelayCommand(PrikaziMojeZivotinjeAsync, () => AppSession.IsVolonter);
@@ -65,6 +71,21 @@ public partial class UdruzenjaViewModel : ObservableObject
         PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync); // uvijek dostupno
 
         _ = OsveziAsync();
+    }
+    
+    private async Task PregledVolonteraAsync()
+    {
+        if (AppSession.CurrentUser?.UdruzenjeId == null) return;
+        var vm = new VolonteriUdruzenjaViewModel(AppSession.CurrentUser.UdruzenjeId.Value);
+        var window = new VolonteriUdruzenjaWindow { DataContext = vm };
+        await window.ShowDialog(_ownerWindow);
+    }
+    
+    private async Task PregledSvihKorisnikaAsync()
+    {
+        var vm = new SviKorisniciViewModel();
+        var window = new SviKorisniciWindow { DataContext = vm };
+        await window.ShowDialog(_ownerWindow);
     }
     
     private async Task PregledZahtevaAsync()

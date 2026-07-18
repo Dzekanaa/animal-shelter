@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.VolonteriUdruzenjaWindow"
+        Title="Volonteri udruženja"
+        Width="800" Height="450"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:VolonteriUdruzenjaViewModel">
+    <Design.DataContext>
+        <vm:VolonteriUdruzenjaViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <TextBox Text="{Binding Filter}" Watermark="Pretraži (ime, prezime, email...)" Width="250" Margin="0,0,10,0"/>
+            <Button Command="{Binding PretraziCommand}" Content="Pretraži" Margin="0,0,10,0"/>
+            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Volonteri}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Korisničko ime" Binding="{Binding KorisnickoIme}" Width="120"/>
+                <DataGridTextColumn Header="Ime" Binding="{Binding Ime}" Width="100"/>
+                <DataGridTextColumn Header="Prezime" Binding="{Binding Prezime}" Width="100"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+                <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100"/>
+                <DataGridTextColumn Header="Datum registracije" Binding="{Binding DatumRegistracije, StringFormat='dd.MM.yyyy'}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
