@@ -1,6 +1,7 @@
 using System.Data;
 using Dapper;
 using AnimalShelter.Database;
+using AnimalShelter.DataBase.Dtos;
 using AnimalShelter.Models;
 using AnimalShelter.Models.Enums;
 
@@ -38,6 +39,27 @@ public class KorisnikService
         return user;
     }
     
+    public IEnumerable<KorisnikDto> GetAllUsers()
+    {
+        const string sql = @"
+        SELECT 
+            id, 
+            tip_korisnika::text AS TipKorisnika,  -- eksplicitno kastujemo u tekst
+            korisnicko_ime, 
+            ime, 
+            prezime, 
+            datum_registracije, 
+            telefon, 
+            email, 
+            adresa, 
+            udruzenje_id
+        FROM korisnik
+        ORDER BY tip_korisnika, prezime, ime
+    ";
+        using var connection = PostgresConnection.CreateConnection();
+        return connection.Query<KorisnikDto>(sql);
+    }
+    
     public IEnumerable<Korisnik> GetAllUdomitelji()
     {
         const string sql = @"
@@ -49,5 +71,21 @@ public class KorisnikService
     ";
         using var connection = PostgresConnection.CreateConnection();
         return connection.Query<Korisnik>(sql);
+    }
+    
+    // DataBase/Services/KorisnikService.cs
+
+    public IEnumerable<Korisnik> GetVolonteriByUdruzenje(int udruzenjeId)
+    {
+        const string sql = @"
+        SELECT id, tip_korisnika, korisnicko_ime, ime, prezime, 
+               datum_registracije, telefon, email, adresa, udruzenje_id
+        FROM korisnik
+        WHERE tip_korisnika = 'Volonter'::tip_korisnika
+          AND udruzenje_id = @UdruzenjeId
+        ORDER BY prezime, ime
+    ";
+        using var connection = PostgresConnection.CreateConnection();
+        return connection.Query<Korisnik>(sql, new { UdruzenjeId = udruzenjeId });
     }
 }

@@ -29,6 +29,14 @@
             <Button Command="{Binding PrikaziUdomiteljeCommand}" 
                     Content="Prikaži udomitelje" 
                     Margin="0,0,5,0"/>
+            <Button Command="{Binding PregledSvihKorisnikaCommand}" 
+                    Content="Svi korisnici" 
+                    IsVisible="{Binding CanViewAllUsers}" 
+                    Margin="0,0,5,0"/>
+            <Button Command="{Binding PregledVolonteraCommand}" 
+                    Content="Volonteri udruženja" 
+                    IsVisible="{Binding isUdruzenjeAdmin}" 
+                    Margin="0,0,5,0"/>
         </StackPanel>
 
         <!-- Lista -->
