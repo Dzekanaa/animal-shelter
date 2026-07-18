@@ -35,7 +35,10 @@ public partial class ZivotinjeViewModel : ObservableObject
     public ICommand ObrisiCommand { get; }
     public ICommand OsveziCommand { get; }
     public ICommand PrivremeniSmestajCommand { get; }  // NOVO
-    public bool CanDoPrivremeniSmestaj => AppSession.IsVolonter && SelectedZivotinja != null;
+    public bool CanDoPrivremeniSmestaj => 
+        AppSession.IsVolonter && 
+        SelectedZivotinja != null && 
+        SelectedZivotinja.Status == StatusZivotinje.DOSTUPNA;
 
 
     public ICommand ZahtevZaUdomljavanjeCommand { get; }
@@ -55,7 +58,8 @@ public partial class ZivotinjeViewModel : ObservableObject
         bool CanManageZivotinje() => AppSession.IsSistemskiAdmin || AppSession.IsAdminUdruzenja;
         bool CanDoPrivremeniSmestaj() => AppSession.IsVolonter && SelectedZivotinja != null;
         
-        ZahtevZaUdomljavanjeCommand = new AsyncRelayCommand(ZahtevZaUdomljavanjeAsync, () => CanRequestAdoption);
+        ZahtevZaUdomljavanjeCommand = new AsyncRelayCommand(ZahtevZaUdomljavanjeAsync, 
+            () => AppSession.IsGuest && SelectedZivotinja != null && SelectedZivotinja.Status == StatusZivotinje.DOSTUPNA);
         PrijavaZaVolontiranjeCommand = new AsyncRelayCommand(PrijaviSeZaVolontiranjeAsync);
 
         DodajCommand = new AsyncRelayCommand(DodajAsync, CanManageZivotinje);
@@ -91,7 +95,19 @@ public partial class ZivotinjeViewModel : ObservableObject
     }
     private async Task ZahtevZaUdomljavanjeAsync()
     {
-        if (SelectedZivotinja == null) return;
+        if (SelectedZivotinja == null || _ownerWindow == null) return;
+
+        // Provjera statusa životinje – dozvoljeno samo za DOSTUPNA
+        if (SelectedZivotinja.Status != StatusZivotinje.DOSTUPNA)
+        {
+            var msg = MessageBoxManager.GetMessageBoxStandard(
+                "Greška",
+                "Ova životinja više nije dostupna za udomljavanje (status: " + SelectedZivotinja.Status + ").",
+                ButtonEnum.Ok,
+                Icon.Error);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+            return;
+        }
 
         var editorVm = new AdoptionRequestEditorViewModel();
         var window = new AdoptionRequestEditorWindow { DataContext = editorVm };
@@ -110,7 +126,11 @@ public partial class ZivotinjeViewModel : ObservableObject
             };
             await Task.Run(() => new ZahtevUdomljavanjeService().Create(dto));
 
-            var msg = MessageBoxManager.GetMessageBoxStandard("Uspeh", "Zahtev je poslat.", ButtonEnum.Ok, Icon.Success);
+            var msg = MessageBoxManager.GetMessageBoxStandard(
+                "Uspjeh", 
+                "Zahtev je poslat.", 
+                ButtonEnum.Ok, 
+                Icon.Success);
             await msg.ShowWindowDialogAsync(_ownerWindow);
         }
     }
@@ -167,6 +187,7 @@ public partial class ZivotinjeViewModel : ObservableObject
         OnPropertyChanged(nameof(CanRequestAdoption));
         (ZahtevZaUdomljavanjeCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(CanDoPrivremeniSmestaj));
+        (PrivremeniSmestajCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         (IzmeniCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         (ObrisiCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();
         (PrivremeniSmestajCommand as AsyncRelayCommand)?.NotifyCanExecuteChanged();

@@ -6,6 +6,7 @@ using Dapper;
 using AnimalShelter.Models;
 using AnimalShelter.DataBase.Dtos;
 using AnimalShelter.Database;
+using AnimalShelter.Models.Enums;
 
 namespace AnimalShelter.DataBase.Services;
 
@@ -14,7 +15,32 @@ public class UdruzenjeService
     // Uklanjamo _connection polje – kreiraćemo novu konekciju svaki put
 
     
-    
+    public IEnumerable<Udruzenje> GetAllForUser(Korisnik? user)
+    {
+        if (user == null || user.TipKorisnika == TipKorisnika.SistemskiAdmin)
+        {
+            // Gost ili SistemskiAdmin -> sva udruženja
+            return GetAll();
+        }
+        else if (user.TipKorisnika == TipKorisnika.AdminUdruzenja || user.TipKorisnika == TipKorisnika.Volonter)
+        {
+            if (user.UdruzenjeId.HasValue)
+            {
+                var udruzenje = GetById(user.UdruzenjeId.Value);
+                return udruzenje != null ? new List<Udruzenje> { udruzenje } : Enumerable.Empty<Udruzenje>();
+            }
+            else
+            {
+                // Ako nema dodeljeno udruženje, ne prikazuj ništa
+                return Enumerable.Empty<Udruzenje>();
+            }
+        }
+        else
+        {
+            // Ostali tipovi (npr. Udomitelj) nemaju pravo pregleda udruženja
+            return Enumerable.Empty<Udruzenje>();
+        }
+    }
     public IEnumerable<Udruzenje> GetAll()
     {
         const string sql = @"

@@ -162,7 +162,7 @@ public partial class UdruzenjaViewModel : ObservableObject
     {
         try
         {
-            var lista = await Task.Run(() => _service.GetAll());
+            var lista = await Task.Run(() => _service.GetAllForUser(AppSession.CurrentUser));
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Udruzenja.Clear();
