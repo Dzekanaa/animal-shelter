@@ -1,0 +1,26 @@
+@startuml
+title Generisanje izveštaja
+
+start
+
+:Odabir opcije "Generiši izveštaj";
+
+:Odabir tipa izveštaja;
+
+:Odabir perioda;
+
+:Prikuplja podatke;
+
+:Generiše statistiku;
+
+:Prikazuje izveštaj;
+
+if (Objaviti izveštaj?) then (Da)
+
+:Objavi izveštaj;
+
+endif
+
+stop
+
+@enduml
