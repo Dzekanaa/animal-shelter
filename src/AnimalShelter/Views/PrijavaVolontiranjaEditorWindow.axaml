@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.PrijavaVolontiranjaEditorWindow"
+        Title="Prijava za volontiranje"
+        Width="450" Height="500"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:PrijavaVolontiranjaEditorViewModel">
+    <Design.DataContext>
+        <vm:PrijavaVolontiranjaEditorViewModel />
+    </Design.DataContext>
+
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="Pošalji" Click="OnPosaljiClick" Margin="0,0,5,0"/>
+            <Button Content="Odustani" Click="OnOdustaniClick"/>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Podaci o prijavi" FontWeight="Bold" Margin="0,0,0,10"/>
+                <TextBlock Text="Ime*" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Ime}" Margin="0,0,0,5"/>
+                <TextBlock Text="Prezime*" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Prezime}" Margin="0,0,0,5"/>
+                <TextBlock Text="Opis (motivacija, iskustvo)" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Opis}" AcceptsReturn="True" Height="80" Margin="0,0,0,5"/>
+                <TextBlock Text="Telefon" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Telefon}" Margin="0,0,0,5"/>
+                <TextBlock Text="Email" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Email}" Margin="0,0,0,5"/>
+                <TextBlock Text="Adresa" Margin="0,5,0,0"/>
+                <TextBox Text="{Binding Adresa}" Margin="0,0,0,5"/>
+                <TextBlock Text="* obavezna polja" FontSize="10" Foreground="Gray" Margin="0,10,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
