@@ -1,0 +1,71 @@
+@startuml
+title Obrada zahteva za volontiranje
+
+actor Osoba
+
+participant Sistem
+participant "PrijavaZaVolontiranje" as Zahtev
+participant "Administrator udruženja" as Admin
+participant Volonter
+
+Osoba -> Sistem : posaljiZahtev()
+
+activate Sistem
+
+create Zahtev
+Sistem -> Zahtev : <<create>>
+
+Sistem -> Sistem : validiraj zahtev
+
+alt zahtev nije validan
+
+Sistem --> Osoba : greška (zahtev nije validan)
+deactivate Sistem
+
+else zahtev je validan
+
+Sistem -> Zahtev : sačuvaj()
+Sistem --> Osoba : potvrda prijema
+
+Sistem -> Admin : noviZahtev(Zahtev)
+
+activate Admin
+
+Admin -> Admin : pregled zahteva
+
+alt prihvaćen
+
+Admin -> Sistem : prihvatiZahtevZaVolontiranje(Zahtev)
+
+activate Sistem
+
+Sistem -> Zahtev : status = PRIHVAĆEN
+
+create Volonter
+Sistem -> Volonter : <<create>>
+
+Sistem -> Volonter : dodeli korisničkoIme()
+Sistem -> Volonter : dodeli lozinku()
+
+deactivate Sistem
+
+else odbijen
+
+Admin -> Sistem : odbijZahtevZaVolontiranje(Zahtev)
+
+activate Sistem
+
+Sistem -> Zahtev : status = ODBIJEN
+
+deactivate Sistem
+
+end
+
+deactivate Admin
+
+Sistem --> Osoba : obaveštenje o odluci
+
+deactivate Sistem
+
+end
+@enduml
