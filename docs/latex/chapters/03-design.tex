@@ -127,22 +127,8 @@ Dijagram stanja prikazuje dozvoljene prelaze između statusa za ključne entitet
     \caption{Dijagram stanja – obrada zahteva za udomljavanje}
     \label{fig:state}
 \end{figure}
-\textit{Opis:}
-\begin{itemize}
-    \item Početno stanje \texttt{Čekanje} – posetilac sajta je podneo prijavu za udomljavanje.
-    \item Iz stanja \texttt{Čekanje} mogući su prelazi:
-        \begin{itemize}
-            \item u \texttt{Prihvaćena} – administrator ili volonter je prihvatio zahtev.
-            \item u \texttt{Odbijena} – administrator ili volonter je odbio zahtev, ili je neko drugi udomio životinju.
-        \end{itemize}
-    \item Iz stanja \texttt{Prihvaćena} mogući su prelazi:
-        \begin{itemize}
-            \item u \texttt{Preuzeta} – podnosilac je preuzeo životinju (status životinje postaje \texttt{UDOMLJENA}).
-            \item nazad u \texttt{Čekanje} – reevaluacija (npr. podnosilac odustane ili se pojave novi uslovi).
-        \end{itemize}
-    \item Iz stanja \texttt{Odbijena} moguć je povratak u \texttt{Čekanje} – reevaluacija (npr. podnosilac ponovo podnese zahtev).
-    \item Krajnja stanja: \texttt{Preuzeta} (uspešno udomljavanje) i \texttt{Odbijena} (zahtev odbijen).
-\end{itemize}
+\textit{Opis: Nakon što posetilac sajta podnese prijavu za udomljavanje neke od životinja organizacije, njegov zahtev se pamti i dobija status ČEKANJA. Tokom obrade statusa, član udruženja može pregledati zahtev i promeniti status na PRIHVAĆEN/ODBIJEN. Status se može vratiti na njegovo inicijalno stanje ponovnim pritiskom na dugme. Ukoliko je zahtev na stanju čekanja, a životinja koja je vezana za taj zahtev u tom trenutku udomljena, status prelazi na ODBIJEN. Nakon udomljavanja životinje, status iz stanja PRIHVAĆEN prelazi u stanje PREUZETA.}
+
 
 \section{Principi dizajna}
 
@@ -174,7 +160,7 @@ Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na
 
 \begin{itemize}
     \item \texttt{udruzenje} – registrovana udruženja
-    \item \texttt{korisnik} – svi korisnici (tipovi: SistemskiAdmin, AdminUdruzenja, Volonter, Udomitelj)
+    \item \texttt{korisnik} – svi korisnici (tipovi: SistemskiAdmin, AdminUdruzenja, Volonter)
     \item \texttt{zivotinja} – životinje sa svim atributima i statusom
     \item \texttt{zahtevzaudomljavanje} – zahtevi za udomljavanje (uključuju i podatke o gostu)
     \item \texttt{prijavazavolontiranje} – prijave za volontiranje
@@ -186,7 +172,6 @@ Sistem koristi PostgreSQL za trajno čuvanje podataka. Skema je normalizovana na
 Postavljeni su indeksi na sve strane ključeve i često korišćene kolone (status, datum). Koriste se triggeri za održavanje konzistentnosti:
 \begin{itemize}
     \item Samo \texttt{AdminUdruzenja} sme imati \texttt{udruzenje\_id}
-    \item \texttt{udomitelj\_id} mora referencirati korisnika tipa \texttt{Udomitelj}
     \item \texttt{volonter\_id} mora referencirati korisnika tipa \texttt{Volonter}
     \item \texttt{podnosilac\_id} (u zahtevima) može biti NULL (za goste) ili referencirati \texttt{Udomitelja}
 \end{itemize}
