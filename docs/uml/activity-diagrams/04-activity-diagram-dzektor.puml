@@ -1,0 +1,47 @@
+@startuml
+|Udomitelj|
+start
+:Popuni podatke zahteva;
+:Pošalji zahtev;
+
+|Sistem|
+:Primi zahtev;
+:Validiraj podatke;
+
+if (Da li su podaci validni?) then (Ne)
+    :Vrati grešku (zahtev nije validan);
+    stop
+else (Da)
+    :Sačuvaj zahtev (status = CEKA);
+    :Obavesti admina i volontera;
+endif
+
+|Administrator / Volonter|
+:Pregledaj zahtev;
+if (Odobri?) then (Da)
+    :Prihvati zahtev;
+else (Ne)
+    :Odbij zahtev;
+endif
+
+|Sistem|
+:Ažuriraj status zahteva;
+
+if (Zahtev prihvaćen?) then (Da)
+    :Status = PRIHVACEN;
+    :Pošalji obaveštenje o prihvatanju;
+else (Ne)
+    :Status = ODBIJEN;
+    :Pošalji obaveštenje o odbijanju;
+    stop
+endif
+
+|Udomitelj|
+:Preuzmi ljubimca;
+
+|Sistem|
+:Status životinje = UDOMLJENA;
+:Pošalji potvrdu o preuzimanju;
+stop
+
+@enduml

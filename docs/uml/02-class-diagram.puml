@@ -8,97 +8,82 @@ skinparam classBackgroundColor<<entity>> ENTITY_COLOR
 skinparam classBackgroundColor<<value>> VALUE_COLOR
 skinparam linetype ortho
 
-' ===== ABSTRACT CLASSES =====
+'================ ABSTRACT =================
+
 abstract class Korisnik <<abstract>> {
     - id: int
+    - tipKorisnika: TipKorisnika
+    - korisnickoIme: string
+    - lozinka: string
     - ime: string
     - prezime: string
-    - email: string
-    - telefon: string
-    - adresa: string
     - datumRegistracije: DateTime
-    + getKorisnikTip(): string
+
+    + dodajUdomitelja(udomitelj): void
+    + udomiZivotinju(zivotinja, udomitelj): void
+    + dodajSlikuŽivotinje(zivotinja, slika): void
+    + obradiZahtevZaUdomljavanje(zahtev): void
+    + dodajNapomenuPriUdomljavanju(udomljavanje, napomena): void
 }
 
-' ===== USER TYPES =====
-class SistemanskiAdmin {
-    + registrujUdruzenje(udruženje): void
+'================ USERS =================
+
+class SistemskiAdmin {
+    - korisnickoIme: string
+    - lozinka: string
+
+    + registrujUdruzenje(udruzenje): void
     + registrujAdmina(admin): void
-    + pregled(): List<Korisnik>
 }
 
 class AdminUdruzenja {
-    - udruženje: Udruženje
-    + promovisiVolontera(volonter): void
-    + upravljajDonacijama(donacija): void
-    + generirajIzveštaj(tip): Izveštaj
-    + pregledVolontera(): List<Volonter>
-    + pregledUdomitelja(): List<Udomitelj>
-    + pregledZivotinja(): List<Životinja>
+    + generisiIzvestaj(tip): Izvestaj
+    + objaviIzveštaj(Izvestaj): void
+    + dodajVolontera(): List<Volonter>
+    + dodajZivotinju(zivotinja): void
+    + importujIzvodRacunaUdruzenja(): void
+
+    + prihvatiZahtevZaVolontiranje(zahtev): void
+    + odbijZahtevZaVolontiranje(zahtev): void
 }
 
 class Volonter {
-    - udruženje: Udruženje
-    - datumUclanjena: DateTime
-    + dodajZivotinju(životinja): void
-    + uzimiZivotinjuUSmeštaj(životinja): void
-    + dodajUdomitelja(udomitelj): void
-    + prihvatiZahtev(zahtev): void
-    + odbijZahtev(zahtev): void
-    + poveziZivotinjuSaUdomiteljem(životinja, udomitelj): void
-    + dodajNapomenu(udomljavanje, napomena): void
+    + uzmiZivotinjuUSmestaj(zivotinja): void
 }
 
 class Udomitelj {
-    - registrovan: boolean
-    - kontaktPodaci: KontaktPodaci
-    + uzimiZivotinju(životinja): void
-    + vratiZivotinju(životinja): void
-    + odustaniOdUdomljavanja(udomljavanje): void
+    - id: int
+    - ime: string
+    - prezime: string
 }
 
-class NeregistrovaniKorisnik {
-    - kontaktPodaci: KontaktPodaci
-    + pregledZivotinja(): List<Životinja>
-    + pregledUdruzenja(): List<Udruženje>
-    + posaljiZahtevZaUdomljavanje(zahtev): void
-}
+'================ ENTITIES =================
 
-' ===== CORE ENTITIES =====
-class Udruženje <<entity>> {
+class Udruzenje <<entity>> {
     - id: int
     - naziv: string
     - opis: string
-    - email: string
-    - telefon: string
-    - adresa: string
     - datumOsnivanja: DateTime
-    - racun: Racun
-    + dodajVolontera(volonter): void
-    + ukloniVolontera(volonter): void
 }
 
-class Životinja <<entity>> {
+class Zivotinja <<entity>> {
     - id: int
     - naziv: string
-    - kategorija: KategorijiaZivotinje
+    - kategorija: KategorijaZivotinje
     - starost: int
-    - pol: string
+    - pol: PolZivotinje
     - rasa: string
-    - vrsta: string
-    - zdravstvenoStanje: string
+    - zdravstvenoStanje: ZdravljeZivotinje
     - opis: string
     - status: StatusZivotinje
-    - slike: List<string>
-    - video: List<string>
+    - slike: List<String>
+    - video: List<String>
     - datumUnosa: DateTime
-    + promeniStatus(noviStatus): void
-    + dodajSliku(slika): void
 }
 
-enum KategorijiaZivotinje {
-    PSI
-    MAČKE
+enum KategorijaZivotinje {
+    PAS
+    MAČKA
     ZEČEVI
     PTICE
     OSTALO
@@ -110,185 +95,111 @@ enum StatusZivotinje {
     UDOMLJENA
 }
 
-class Udomljavanje <<entity>> {
-    - id: int
-    - životinja: Životinja
-    - udomitelj: Udomitelj
-    - datumUdomljavanja: DateTime
-    - napomena: string
-    - statusKomunikacije: StatusKomunikacije
-    + posaljiObaveštenje(): void
-    + promeniStatus(noviStatus): void
+enum PolZivotinje {
+    MUŠKI
+    ŽENSKI
+    NEPOZNATO
 }
 
-enum StatusKomunikacije {
+enum ZdravljeZivotinje {
+    ZDRAVA
+    LOŠIJEG ZDRAVLJA
+    BOLESNA
+}
+
+enum NacinObavestavanja {
     SMS
     EMAIL
-    RUČNO
+    RUCNO
 }
 
-' ===== REQUEST/DEMAND =====
 class ZahtevZaUdomljavanje <<entity>> {
     - id: int
-    - životinja: Životinja
-    - udomitelj: Udomitelj
-    - datumPodnoša: DateTime
-    - kontaktPodaci: KontaktPodaci
+    - datumPodnosenja: DateTime
+    - datumUdomljavanja: DateTime
+    - podnosilac: Udomitelj
     - status: StatusZahteva
-    + prihvati(): void
-    + odbij(): void
+    - napomena: string
+    - nacinObavestavanja: NacinObavestavanja
 }
 
 enum StatusZahteva {
-    ČEKAJUĆI
-    PRIHVAĆEN
+    CEKA
+    PRIHVACEN
     ODBIJEN
+    PREUZETA
 }
 
-' ===== DONATIONS & REPORTS =====
-class Donacija <<entity>> {
+class Izvestaj {
     - id: int
-    - vrsta: VrstaDonacije
-    - iznos: decimal
-    - datumUplate: DateTime
-    - donator: string
-    - svrha: string
-    - živinjaNamena: Životinja [0..1]
-    - racun: Racun
-    + dodajUEvidenciju(): void
-}
-
-enum VrstaDonacije {
-    HRANA
-    VODA
-    LEKOVI
-    OPREMA
-    NOVAC
-}
-
-class Izveštaj <<value>> {
-    - id: int
-    - tip: TipIzveštaja
-    - datumGenisanja: DateTime
-    - Period: Period
+    - tip: TipIzvestaja
+    - period: PeriodIzvestaja
+    - datumGenerisanja: DateTime
     - statistika: Statistika
-    + generiši(): void
-    + objavi(): void
 }
 
-enum TipIzveštaja {
-    UDOMLJAVANJE
-    DONACIJA
+enum TipIzvestaja {
+    UDOMLJAVANJA
+    DONACIJE
+}
+
+enum PeriodIzvestaja {
     DNEVNI
-    NEDELNI
-    MESEČNI
+    NEDELJNI
+    MESECNI
 }
 
-class Statistika {
+class Statistika <<value>> {
     - brojUdomljenih: int
-    - brojVratenih: int
+    - brojVracenih: int
     - ukupnaDonacija: decimal
-    - vrsteDonaracija: List<VrstaDonacije>
+    - vrsteDonacija: List<VrstaDonacije>
 }
 
-' ===== VALUE OBJECTS =====
+class PrijavaZaVolontiranje {
+    - id: int
+    - ime: string
+    - prezime: string
+    - opis: string
+    - statusPrijave: StatusPrijave
+}
+
+enum StatusPrijave {
+    ČEKA
+    ODBIJEN
+    PRIHVAĆEN
+}
+
+'================ VALUE OBJECTS =================
+
 class KontaktPodaci <<value>> {
     - telefon: string
     - email: string
     - adresa: string
 }
 
-class Period <<value>> {
-    - pocetakPerioda: DateTime
-    - krajPerioda: DateTime
-}
+'================ RELATIONS =================
 
-class Racun <<value>> {
-    - brojRacuna: string
-    - banka: string
-    - stanje: decimal
-    - listaUplata: List<Donacija>
-}
-
-' ===== RELATIONSHIPS =====
-
-' Nasledjivanje
-Korisnik <|-- SistemanskiAdmin
 Korisnik <|-- AdminUdruzenja
 Korisnik <|-- Volonter
-Korisnik <|-- Udomitelj
-Korisnik <|-- NeregistrovaniKorisnik
+Korisnik *-- KontaktPodaci
 
-' Životinja - Status & Kategorija
-Životinja --> StatusZivotinje : koristi
-Životinja --> KategorijiaZivotinje : pripada
+Udruzenje *-- KontaktPodaci
+Udruzenje "1" -- "*" Zivotinja
+Udruzenje "1" -- "*" Volonter
+Udruzenje "1" -- "1..*" AdminUdruzenja
 
-' Udruženje - Životinje
-Udruženje "1" --> "*" Životinja : sadrži
-Udruženje "1" --> "*" Volonter : zapošljava
-Udruženje "1" --> "*" AdminUdruzenja : upravlja
-Udruženje "1" --> "1" Racun : ima
+AdminUdruzenja "1" -- "*" Izvestaj
 
-' AdminUdruzenja - Udruženje
-AdminUdruzenja --> Udruženje : upravlja
+Volonter "0..1" -- "*" Zivotinja
 
-' Volonter - Udruženje
-Volonter --> Udruženje : radi_za
+Udomitelj "0..1" -- "*" Zivotinja
+Udomitelj *-- KontaktPodaci
 
-' Udomljavanje
-Udomljavanje --> Životinja : udomljava
-Udomljavanje --> Udomitelj : kome
-Udomljavanje --> StatusKomunikacije : koristi
-Udomljavanje --> Volonter : pravi_volonter
+ZahtevZaUdomljavanje "*" -- "1" Zivotinja
 
-' Zahtev
-ZahtevZaUdomljavanje --> Životinja : za
-ZahtevZaUdomljavanje --> Udomitelj : od
-ZahtevZaUdomljavanje --> KontaktPodaci : sa
-ZahtevZaUdomljavanje --> StatusZahteva : ima_status
+Izvestaj --> Statistika
 
-' Donacija
-Donacija --> VrstaDonacije : je_tipa
-Donacija --> Racun : uplaćena_na
-Donacija "0..1" --> "1" Životinja : namenjena
-
-' Izveštaj
-Izveštaj --> TipIzveštaja : je_tipa
-Izveštaj --> Period : za_period
-Izveštaj --> Statistika : sadrži
-Izveštaj --> Udomljavanje : analizu
-Izveštaj --> Donacija : analizu
-
-' Udomitelj - Udomljavanje
-Udomitelj "1" --> "*" Udomljavanje : ima
-
-' KontaktPodaci
-NeregistrovaniKorisnik --> KontaktPodaci : sadrži
-Udomitelj --> KontaktPodaci : sadrži
-
-note right of Životinja
-  Status se menja tokom životnog ciklusa:
-  DOSTUPNA -> ZAUZETA -> UDOMLJENA
-  ili DOSTUPNA -> ZAUZETA -> DOSTUPNA (vraćena)
-end note
-
-note right of AdminUdruzenja
-  Samo administrator može:
-  - Upravljati donacijama
-  - Generisati izveštaje
-  - Pregledati sve korisnike
-end note
-
-note right of Donacija
-  Donacija može biti:
-  - Opšta (živinja = NULL)
-  - Namenjena konkretnoj životinji
-end note
-
-note right of Volonter
-  Volonter može biti promovisan
-  u AdminUdruzenja od strane
-  AdminUdruzenja
-end note
+PrijavaZaVolontiranje *-- KontaktPodaci
 
 @enduml

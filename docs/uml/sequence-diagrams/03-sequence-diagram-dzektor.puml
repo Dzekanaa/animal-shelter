@@ -1,0 +1,55 @@
+@startuml
+
+actor Udomitelj
+participant "Sistem" as Sistem
+participant "Admin udruženja" as Admin
+participant "Obaveštenje" as Notification
+
+' ---------------------------
+' 1. Podnošenje zahteva
+' ---------------------------
+Udomitelj -> Sistem : podnesiZahtev(ime, prezime, kontakt, ...)
+activate Sistem
+
+Sistem -> Sistem : kreiraj novi ZahtevZaUdomljavanje
+
+alt zahtev nije validan (nedostaju podaci, već postoji...)
+    Sistem --> Udomitelj : greška (zahtev nije validan)
+    deactivate Sistem
+    note right: Kraj procesa
+else zahtev je validan
+    Sistem -> Sistem : sačuvaj zahtev (status = CEKA)
+    Sistem --> Udomitelj : potvrda prijema (zahtev je zabeležen)
+
+    ' ---------- Obaveštenje admina ----------
+    Sistem -> Admin : noviZahtev(zahtevId)
+    activate Admin
+    note right: Admin pregleda zahtev
+
+    ' ---------- Admin donosi odluku ----------
+    Admin -> Sistem : obradiZahtev(zahtevId, odluka)
+    deactivate Admin
+    activate Sistem
+
+    alt odluka = PRIHVACEN
+        Sistem -> Sistem : status = PRIHVACEN, datum_udomljavanja = sad
+        Sistem -> Notification : posaljiObavestenje(odluka, podaci)
+        activate Notification
+        Notification --> Udomitelj : SMS / email (zahtev prihvaćen)
+        deactivate Notification
+
+        ' ---------- Preuzimanje ljubimca ----------
+        Udomitelj -> Sistem : preuzmiLjubimca()
+        Sistem -> Sistem : status = UDOMLJENA
+        Sistem --> Udomitelj : potvrda preuzimanja
+
+    else odluka = ODBIJEN
+        Sistem -> Sistem : status = ODBIJEN
+        Sistem -> Notification : posaljiObavestenje(odluka, podaci)
+        activate Notification
+        Notification --> Udomitelj : SMS / email (zahtev odbijen)
+        deactivate Notification
+    end
+    deactivate Sistem
+end
+@enduml
