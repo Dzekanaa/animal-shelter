@@ -2,12 +2,14 @@
 
 MAIN_FILE = main
 OUTPUT_DIR = build
+UML_DIR = ../uml
+FIGURES_DIR = figures
 
 help:
 	@echo "Komande:"
 	@echo "  make all       - Generiši PNG + PDF"
 	@echo "  make build     - Samo PDF"
-	@echo "  make plantuml  - Samo PNG"
+	@echo "  make plantuml  - Generiši sve dijagrame (osim use-case)"
 	@echo "  make view      - Otvori PDF"
 	@echo "  make clean     - Obriši sve"
 
@@ -25,14 +27,16 @@ build-v:
 	pdflatex -interaction=nonstopmode -output-directory=$(OUTPUT_DIR) $(MAIN_FILE).tex
 
 plantuml:
-	@mkdir -p figures
-	@if [ -f ../uml/02-class-diagram.puml ]; then \
-		plantuml -png ../uml/02-class-diagram.puml; \
-		mv ../uml/animal-shelter-class-diagram.png figures/02-class-diagram.png; \
-		echo "✓ PNG: figures/animal-shelter-class-diagram.png"; \
-	else \
-		echo "⚠ Dijagram nije pronađen: ../uml/02-class-diagram.puml"; \
-	fi
+	@mkdir -p $(FIGURES_DIR)
+	@echo "🔍 Tražim dijagrame (osim use-case)..."
+	@find $(UML_DIR) -name "*.puml" -type f ! -name "01-use-case.puml" | while read file; do \
+		echo "   📐 Procesiram: $$file"; \
+		plantuml -png "$$file"; \
+		base=$$(basename "$$file" .puml); \
+		mv "$$(dirname "$$file")/$$base.png" $(FIGURES_DIR)/; \
+		echo "      -> $(FIGURES_DIR)/$$base.png"; \
+	done
+	@echo "✓ Svi dijagrami generisani u $(FIGURES_DIR)/"
 
 all: plantuml build
 	@echo "✓ GOTOVO!"
@@ -48,5 +52,6 @@ view: build
 
 clean:
 	rm -rf $(OUTPUT_DIR)
+	rm -f $(FIGURES_DIR)/*.png
 	rm -f *.pdf *.aux *.log *.out *.toc *.lof *.bbl *.blg
 	@echo "Done"
