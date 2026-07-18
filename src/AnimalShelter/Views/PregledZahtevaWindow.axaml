@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.PregledZahtevaWindow"
+        Title="Pregled zahteva za udomljavanje"
+        Width="800" Height="450"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:PregledZahtevaViewModel">
+    <Design.DataContext>
+        <vm:PregledZahtevaViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding PrihvatiCommand}" Content="Prihvati" Margin="0,0,5,0"/>
+            <Button Command="{Binding OdbijCommand}" Content="Odbij" Margin="0,0,5,0"/>
+            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Zahtevi}"
+                  SelectedItem="{Binding SelectedZahtev}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Ime" Binding="{Binding Ime}" Width="100"/>
+                <DataGridTextColumn Header="Prezime" Binding="{Binding Prezime}" Width="100"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="150"/>
+                <DataGridTextColumn Header="Telefon" Binding="{Binding Telefon}" Width="100"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                <DataGridTextColumn Header="Datum podnošenja" Binding="{Binding DatumPodnosenja, StringFormat='dd.MM.yyyy HH:mm'}" Width="130"/>
+                <DataGridTextColumn Header="Način obavešt." Binding="{Binding NacinObavestavanja}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

@@ -53,57 +53,58 @@ public class PrijavaVolontiranjaService
     }
 
     public bool AcceptApplication(int prijavaId, VolonterCreateDto volonterDto)
-    {
-        using var connection = PostgresConnection.CreateConnection();
-        using var transaction = connection.BeginTransaction();
+{
+    using var connection = PostgresConnection.CreateConnection();
+    using var transaction = connection.BeginTransaction();
 
-        try
-        {
-            // 1. Ažuriraj status prijave na PRIHVACEN
-            const string sqlUpdate = @"
+    try
+    {
+        // 1. Ažuriraj status prijave na PRIHVACEN
+        const string sqlUpdate = @"
             UPDATE prijavazavolontiranje 
             SET status_prijave = 'PRIHVACEN'::status_prijave 
             WHERE id = @Id
         ";
-            connection.Execute(sqlUpdate, new { Id = prijavaId }, transaction);
+        connection.Execute(sqlUpdate, new { Id = prijavaId }, transaction);
 
-            // 2. Preuzmi podatke iz prijave
-            const string sqlGetPrijava = @"
-            SELECT ime, prezime, telefon, email, adresa 
+        // 2. Preuzmi podatke iz prijave (ime, prezime, kontakt, udruzenje_id)
+        const string sqlGetPrijava = @"
+            SELECT ime, prezime, telefon, email, adresa, udruzenje_id 
             FROM prijavazavolontiranje 
             WHERE id = @Id
         ";
-            var prijava = connection.QueryFirstOrDefault(sqlGetPrijava, new { Id = prijavaId }, transaction);
-            if (prijava == null) return false;
+        var prijava = connection.QueryFirstOrDefault(sqlGetPrijava, new { Id = prijavaId }, transaction);
+        if (prijava == null) return false;
 
-            // 3. Kreiraj novog korisnika (Volonter) - udruzenje_id = NULL
-            const string sqlInsertKorisnik = @"
+        // 3. Kreiraj novog korisnika (Volonter) sa udruzenje_id
+        const string sqlInsertKorisnik = @"
             INSERT INTO korisnik 
                 (tip_korisnika, korisnicko_ime, lozinka, ime, prezime, 
                  datum_registracije, telefon, email, adresa, udruzenje_id)
             VALUES 
                 ('Volonter'::tip_korisnika, @KorisnickoIme, @Lozinka, @Ime, @Prezime,
-                 CURRENT_TIMESTAMP, @Telefon, @Email, @Adresa, NULL)
+                 CURRENT_TIMESTAMP, @Telefon, @Email, @Adresa, @UdruzenjeId)
         ";
 
-            connection.Execute(sqlInsertKorisnik, new
-            {
-                volonterDto.KorisnickoIme,
-                volonterDto.Lozinka,
-                Ime = prijava.ime,
-                Prezime = prijava.prezime,
-                Telefon = prijava.telefon,
-                Email = prijava.email,
-                Adresa = prijava.adresa
-            }, transaction);
-
-            transaction.Commit();
-            return true;
-        }
-        catch
+        connection.Execute(sqlInsertKorisnik, new
         {
-            transaction.Rollback();
-            throw;
-        }
+            volonterDto.KorisnickoIme,
+            volonterDto.Lozinka,
+            Ime = prijava.ime,
+            Prezime = prijava.prezime,
+            Telefon = prijava.telefon,
+            Email = prijava.email,
+            Adresa = prijava.adresa,
+            UdruzenjeId = prijava.udruzenje_id   // <-- koristi udruzenje_id iz prijave
+        }, transaction);
+
+        transaction.Commit();
+        return true;
+    }
+    catch
+    {
+        transaction.Rollback();
+        throw;
+    }
     }
 }

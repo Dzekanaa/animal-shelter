@@ -36,9 +36,11 @@ public partial class UdruzenjaViewModel : ObservableObject
     public ICommand PregledPrijavaCommand { get; }
     public ICommand PrikaziUdomiteljeCommand { get; }
     public ICommand PrikaziMojeZivotinjeCommand { get; }
+    public ICommand PregledZahtevaCommand { get; }
     
     public bool CanManageUdruzenja => AppSession.IsSistemskiAdmin;
     public bool isUdruzenjeAdmin => AppSession.IsAdminUdruzenja;
+    public bool CanPregledZahteva => AppSession.IsAdminUdruzenja || AppSession.IsVolonter;
 
     private Window? _ownerWindow;
 
@@ -50,6 +52,8 @@ public partial class UdruzenjaViewModel : ObservableObject
         bool CanManageUdruzenja() => AppSession.IsSistemskiAdmin;
         
         
+        PregledZahtevaCommand = new AsyncRelayCommand(PregledZahtevaAsync, () => 
+            AppSession.IsAdminUdruzenja || AppSession.IsVolonter);
         PrikaziMojeZivotinjeCommand = new AsyncRelayCommand(PrikaziMojeZivotinjeAsync, () => AppSession.IsVolonter);
         PrikaziUdomiteljeCommand = new AsyncRelayCommand(PrikaziUdomiteljeAsync, () => 
             AppSession.IsSistemskiAdmin || AppSession.IsAdminUdruzenja || AppSession.IsVolonter);
@@ -61,6 +65,15 @@ public partial class UdruzenjaViewModel : ObservableObject
         PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync); // uvijek dostupno
 
         _ = OsveziAsync();
+    }
+    
+    private async Task PregledZahtevaAsync()
+    {
+        if (AppSession.CurrentUser?.UdruzenjeId == null) return;
+        var vm = new PregledZahtevaViewModel(AppSession.CurrentUser.UdruzenjeId.Value);
+        var window = new PregledZahtevaWindow { DataContext = vm };
+        vm.SetOwnerWindow(_ownerWindow);
+        await window.ShowDialog(_ownerWindow);
     }
     
     private async Task PrikaziMojeZivotinjeAsync()
