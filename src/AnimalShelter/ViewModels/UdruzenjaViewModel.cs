@@ -35,6 +35,7 @@ public partial class UdruzenjaViewModel : ObservableObject
     public ICommand PrikaziZivotinjeCommand { get; }
     public ICommand PregledPrijavaCommand { get; }
     public ICommand PrikaziUdomiteljeCommand { get; }
+    public ICommand PrikaziMojeZivotinjeCommand { get; }
     
     public bool CanManageUdruzenja => AppSession.IsSistemskiAdmin;
     public bool isUdruzenjeAdmin => AppSession.IsAdminUdruzenja;
@@ -48,6 +49,8 @@ public partial class UdruzenjaViewModel : ObservableObject
         
         bool CanManageUdruzenja() => AppSession.IsSistemskiAdmin;
         
+        
+        PrikaziMojeZivotinjeCommand = new AsyncRelayCommand(PrikaziMojeZivotinjeAsync, () => AppSession.IsVolonter);
         PrikaziUdomiteljeCommand = new AsyncRelayCommand(PrikaziUdomiteljeAsync, () => 
             AppSession.IsSistemskiAdmin || AppSession.IsAdminUdruzenja || AppSession.IsVolonter);
         PregledPrijavaCommand = new AsyncRelayCommand(PregledPrijavaAsync, () => AppSession.IsAdminUdruzenja);
@@ -58,6 +61,14 @@ public partial class UdruzenjaViewModel : ObservableObject
         PrikaziZivotinjeCommand = new AsyncRelayCommand<Udruzenje>(PrikaziZivotinjeAsync); // uvijek dostupno
 
         _ = OsveziAsync();
+    }
+    
+    private async Task PrikaziMojeZivotinjeAsync()
+    {
+        if (AppSession.CurrentUser == null) return;
+        var vm = new MojeZivotinjeViewModel(AppSession.CurrentUser.Id);
+        var window = new MojeZivotinjeWindow { DataContext = vm };
+        await window.ShowDialog(_ownerWindow);
     }
     
     private async Task PrikaziUdomiteljeAsync()

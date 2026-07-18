@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AnimalShelter.ViewModels"
+        x:Class="AnimalShelter.Views.MojeZivotinjeWindow"
+        Title="Moje životinje (privremeni smještaj)"
+        Width="800" Height="450"
+        WindowStartupLocation="CenterOwner"
+        x:DataType="vm:MojeZivotinjeViewModel">
+    <Design.DataContext>
+        <vm:MojeZivotinjeViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Command="{Binding OsveziCommand}" Content="Osveži" />
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Zivotinje}"
+                  SelectedItem="{Binding SelectedZivotinja}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Naziv" Binding="{Binding Naziv}" Width="*"/>
+                <DataGridTextColumn Header="Kategorija" Binding="{Binding Kategorija}" Width="100"/>
+                <DataGridTextColumn Header="Pol" Binding="{Binding Pol}" Width="80"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="100"/>
+                <DataGridTextColumn Header="Datum unosa" Binding="{Binding DatumUnosa, StringFormat='dd.MM.yyyy'}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
