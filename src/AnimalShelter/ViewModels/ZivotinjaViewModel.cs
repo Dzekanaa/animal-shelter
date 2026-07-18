@@ -55,7 +55,7 @@ public partial class ZivotinjeViewModel : ObservableObject
         bool CanDoPrivremeniSmestaj() => AppSession.IsVolonter && SelectedZivotinja != null;
         
         ZahtevZaUdomljavanjeCommand = new AsyncRelayCommand(ZahtevZaUdomljavanjeAsync, () => CanRequestAdoption);
-        PrijavaZaVolontiranjeCommand = new AsyncRelayCommand(PrijavaZaVolontiranjeAsync);
+        PrijavaZaVolontiranjeCommand = new AsyncRelayCommand(PrijaviSeZaVolontiranjeAsync);
 
         DodajCommand = new AsyncRelayCommand(DodajAsync, CanManageZivotinje);
         IzmeniCommand = new AsyncRelayCommand(IzmeniAsync, () => CanManageZivotinje() && SelectedZivotinja != null);
@@ -66,14 +66,27 @@ public partial class ZivotinjeViewModel : ObservableObject
         _ = OsveziAsync();
     }
     
-    private async Task PrijavaZaVolontiranjeAsync()
+    private async Task PrijaviSeZaVolontiranjeAsync()
     {
-        var msg = MessageBoxManager.GetMessageBoxStandard(
-            "Prijava za volontiranje",
-            "Vaša prijava za volontiranje je poslata. Administrator će vas kontaktirati.",
-            ButtonEnum.Ok,
-            Icon.Info);
-        await msg.ShowWindowDialogAsync(_ownerWindow);
+        var editorVm = new PrijavaVolontiranjaEditorViewModel();
+        var window = new PrijavaVolontiranjaEditorWindow { DataContext = editorVm };
+        var result = await window.ShowDialog<bool?>(_ownerWindow);
+        if (result == true)
+        {
+            var dto = new PrijavaVolontiranjaCreateDto
+            {
+                Ime = editorVm.Ime,
+                Prezime = editorVm.Prezime,
+                Opis = editorVm.Opis,
+                Telefon = editorVm.Telefon,
+                Email = editorVm.Email,
+                Adresa = editorVm.Adresa,
+                UdruzenjeId = _udruzenjeId
+            };
+            await Task.Run(() => new PrijavaVolontiranjaService().Create(dto));
+            var msg = MessageBoxManager.GetMessageBoxStandard("Uspeh", "Prijava je poslata.", ButtonEnum.Ok, Icon.Success);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+        }
     }
     private async Task ZahtevZaUdomljavanjeAsync()
     {

@@ -1,3 +1,4 @@
+using System;
 using AnimalShelter.Models.Enums;
 
 namespace AnimalShelter.Models;
@@ -12,4 +13,9 @@ public class PrijavaZaVolontiranje
     public string? Telefon { get; set; }
     public string? Email { get; set; }
     public string? Adresa { get; set; }
+    public int UdruzenjeId { get; set; }       
+    public DateTime DatumPodnosenja { get; set; } 
+
+    // Navigacijski properti
+    public Udruzenje? Udruzenje { get; set; }
 }
