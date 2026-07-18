@@ -15,6 +15,9 @@
             <Button Command="{Binding IzmeniCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Izmeni" Margin="0,0,5,0"/>
             <Button Command="{Binding ObrisiCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Obriši" Margin="0,0,5,0"/>
             <Button Command="{Binding OsveziCommand}" IsEnabled="{Binding CanManageUdruzenja}" Content="Osveži" />
+            <Button Command="{Binding PrikaziMojeZivotinjeCommand}" 
+                    Content="Moje životinje" 
+                    Margin="0,0,5,0"/>
             <Button Command="{Binding PregledPrijavaCommand}" 
                     Content="Pregled prijava" 
                     IsEnabled="{Binding isUdruzenjeAdmin}"

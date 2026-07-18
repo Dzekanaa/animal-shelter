@@ -11,6 +11,7 @@ using MsBox.Avalonia.Enums;
 using AnimalShelter.Models;
 using AnimalShelter.DataBase.Services;
 using AnimalShelter.DataBase.Dtos;
+using AnimalShelter.Models.Enums;
 using AnimalShelter.Views;
 
 namespace AnimalShelter.ViewModels;
@@ -100,16 +101,51 @@ public partial class ZivotinjeViewModel : ObservableObject
     }
     
     
+// ViewModels/ZivotinjeViewModel.cs
+
     private async Task PrivremeniSmestajAsync()
     {
-        if (SelectedZivotinja == null) return;
-        // Boilerplate – samo prikazujemo poruku
-        var msg = MessageBoxManager.GetMessageBoxStandard(
-            "Privremeni smještaj",
-            $"Životinja '{SelectedZivotinja.Naziv}' je smještena u privremeni smještaj.",
-            ButtonEnum.Ok,
-            Icon.Info);
-        await msg.ShowWindowDialogAsync(_ownerWindow);
+        if (SelectedZivotinja == null || _ownerWindow == null)
+            return;
+
+        // Provjera da li je već zauzeta ili udomljena
+        if (SelectedZivotinja.Status == StatusZivotinje.ZAUZETA || 
+            SelectedZivotinja.Status == StatusZivotinje.UDOMLJENA)
+        {
+            var msg = MessageBoxManager.GetMessageBoxStandard(
+                "Greška",
+                "Ova životinja je već zauzeta ili udomljena.",
+                ButtonEnum.Ok,
+                Icon.Error);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+            return;
+        }
+
+        if (AppSession.CurrentUser == null || !AppSession.IsVolonter)
+            return;
+
+        var success = await Task.Run(() => 
+            _service.UpdateTemporaryShelter(SelectedZivotinja.Id, AppSession.CurrentUser.Id));
+
+        if (success)
+        {
+            var msg = MessageBoxManager.GetMessageBoxStandard(
+                "Uspjeh",
+                $"Životinja '{SelectedZivotinja.Naziv}' je smještena u privremeni smještaj.",
+                ButtonEnum.Ok,
+                Icon.Success);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+            await OsveziAsync();
+        }
+        else
+        {
+            var msg = MessageBoxManager.GetMessageBoxStandard(
+                "Greška",
+                "Životinja nije mogla biti smještena. Možda je već zauzeta ili udomljena.",
+                ButtonEnum.Ok,
+                Icon.Error);
+            await msg.ShowWindowDialogAsync(_ownerWindow);
+        }
     }
     partial void OnSelectedZivotinjaChanged(Zivotinja? value)
     {

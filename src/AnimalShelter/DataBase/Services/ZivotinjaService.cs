@@ -66,6 +66,31 @@ public class ZivotinjaService
         using var connection = PostgresConnection.CreateConnection();
         return connection.ExecuteScalar<int>(sql, parameters);
     }
+    
+    public bool UpdateTemporaryShelter(int animalId, int volonterId)
+    {
+        const string sql = @"
+        UPDATE Zivotinja
+        SET status = 'ZAUZETA'::status_zivotinje,
+            volonter_id = @VolonterId
+        WHERE id = @AnimalId
+          AND status NOT IN ('ZAUZETA', 'UDOMLJENA')   -- <-- dodato UDOMLJENA
+    ";
+        using var connection = PostgresConnection.CreateConnection();
+        var rows = connection.Execute(sql, new { AnimalId = animalId, VolonterId = volonterId });
+        return rows > 0;
+    }
+
+    public IEnumerable<Zivotinja> GetByVolonterId(int volonterId)
+    {
+        const string sql = @"
+        SELECT * FROM Zivotinja
+        WHERE volonter_id = @VolonterId
+        ORDER BY datum_unosa DESC
+    ";
+        using var connection = PostgresConnection.CreateConnection();
+        return connection.Query<Zivotinja>(sql, new { VolonterId = volonterId });
+    }
 
     public bool Update(ZivotinjaUpdateDto dto)
     {
