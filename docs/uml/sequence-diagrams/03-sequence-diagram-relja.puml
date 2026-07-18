@@ -44,8 +44,8 @@ Sistem -> Zahtev : status = PRIHVAĆEN
 create Volonter
 Sistem -> Volonter : <<create>>
 
-Sistem -> Volonter : dodeli korisničkoIme()
-Sistem -> Volonter : dodeli lozinku()
+Sistem -> Volonter : dodeli korisničko ime
+Sistem -> Volonter : dodeli lozinku
 
 deactivate Sistem
 
